@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jenkins
+  labels:
+    name: jenkins
+    app: jenkins
+    purpose: ci-cd
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+    app: monitoring
+    purpose: observability
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitops
+  labels:
+    name: gitops
+    app: gitops
+    purpose: gitops-management
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab-stands
+  labels:
+    name: lab-stands
+    app: lab-stands
+    purpose: physical-devices
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: artifacts
+  labels:
+    name: artifacts
+    app: artifacts
+    purpose: artifact-management
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress-nginx
+  labels:
+    name: ingress-nginx
+    app: ingress-nginx
+    purpose: ingress-controller
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+  labels:
+    name: metallb-system
+    app: metallb
+    purpose: load-balancer
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: storage
+  labels:
+    name: storage
+    app: storage
+    purpose: storage-management 

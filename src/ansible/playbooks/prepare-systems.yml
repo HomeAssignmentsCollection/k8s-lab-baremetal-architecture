@@ -1,0 +1,229 @@
+---
+# Ansible playbook for preparing systems for Kubernetes installation
+# Ansible плейбук для подготовки систем к установке Kubernetes
+
+- name: Prepare systems for Kubernetes installation
+  hosts: all
+  become: true
+  gather_facts: true
+  
+  vars:
+    # System configuration variables
+    # Переменные конфигурации системы
+    kubernetes_version: "{{ kubernetes_version | default('1.28.0') }}"
+    container_runtime: "{{ container_runtime | default('containerd') }}"
+    disable_swap: true
+    enable_ip_forward: true
+    enable_bridge_filter: true
+    
+  pre_tasks:
+    - name: Update package cache
+      package_facts:
+        manager: auto
+      
+  tasks:
+    # System preparation tasks
+    # Задачи подготовки системы
+    
+    - name: Update system packages
+      package:
+        name: "*"
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+      
+    - name: Update system packages (RHEL/CentOS)
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "RedHat"
+      
+    - name: Install required packages (Debian/Ubuntu)
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - software-properties-common
+          - wget
+          - git
+          - vim
+          - htop
+          - net-tools
+          - iptables
+          - ipset
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+      
+    - name: Install required packages (RHEL/CentOS)
+      yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+          - curl
+          - wget
+          - git
+          - vim
+          - htop
+          - net-tools
+          - iptables
+          - ipset
+        state: present
+      when: ansible_os_family == "RedHat"
+      
+    # Disable swap
+    # Отключение swap
+    
+    - name: Disable swap
+      command: swapoff -a
+      when: disable_swap
+      
+    - name: Remove swap from fstab
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        comment: '# \1'
+        state: present
+      when: disable_swap
+      
+    # Configure kernel modules
+    # Настройка модулей ядра
+    
+    - name: Load kernel modules
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+      when: enable_bridge_filter
+      
+    - name: Enable kernel modules to load on boot
+      lineinfile:
+        path: /etc/modules-load.d/k8s.conf
+        line: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+      when: enable_bridge_filter
+      
+    # Configure sysctl parameters
+    # Настройка параметров sysctl
+    
+    - name: Configure sysctl parameters
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop:
+        - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
+        - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
+        - { name: 'net.ipv4.ip_forward', value: '1' }
+        - { name: 'net.ipv4.conf.all.forwarding', value: '1' }
+        - { name: 'net.ipv6.conf.all.forwarding', value: '1' }
+      when: enable_ip_forward or enable_bridge_filter
+      
+    # Configure firewall
+    # Настройка файрвола
+    
+    - name: Configure firewall for Kubernetes (UFW)
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - 6443  # Kubernetes API Server
+        - 2379  # etcd
+        - 2380  # etcd
+        - 10250 # Kubelet API
+        - 10251 # kube-scheduler
+        - 10252 # kube-controller-manager
+        - 10255 # Read-only Kubelet API
+        - 30000 # NodePort Services
+        - 32767 # NodePort Services
+      when: ansible_os_family == "Debian" and ansible_service_mgr == "systemd"
+      
+    - name: Configure firewall for Kubernetes (firewalld)
+      firewalld:
+        port: "{{ item }}/tcp"
+        permanent: yes
+        state: enabled
+      loop:
+        - 6443  # Kubernetes API Server
+        - 2379  # etcd
+        - 2380  # etcd
+        - 10250 # Kubelet API
+        - 10251 # kube-scheduler
+        - 10252 # kube-controller-manager
+        - 10255 # Read-only Kubelet API
+        - 30000 # NodePort Services
+        - 32767 # NodePort Services
+      when: ansible_os_family == "RedHat" and ansible_service_mgr == "systemd"
+      
+    # Configure time synchronization
+    # Настройка синхронизации времени
+    
+    - name: Install chrony (Debian/Ubuntu)
+      apt:
+        name: chrony
+        state: present
+      when: ansible_os_family == "Debian"
+      
+    - name: Install chrony (RHEL/CentOS)
+      yum:
+        name: chrony
+        state: present
+      when: ansible_os_family == "RedHat"
+      
+    - name: Start and enable chrony
+      systemd:
+        name: chrony
+        state: started
+        enabled: yes
+        
+    # Configure SSH
+    # Настройка SSH
+    
+    - name: Configure SSH for better performance
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - { regexp: '^#?ClientAliveInterval', line: 'ClientAliveInterval 60' }
+        - { regexp: '^#?ClientAliveCountMax', line: 'ClientAliveCountMax 3' }
+        - { regexp: '^#?TCPKeepAlive', line: 'TCPKeepAlive yes' }
+      notify: restart ssh
+      
+    # Create Kubernetes user
+    # Создание пользователя Kubernetes
+    
+    - name: Create kubernetes user
+      user:
+        name: kubernetes
+        system: yes
+        shell: /bin/bash
+        home: /home/kubernetes
+        createhome: yes
+        groups: docker
+        append: yes
+        
+    - name: Set up SSH key for kubernetes user
+      authorized_key:
+        user: kubernetes
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        
+  handlers:
+    - name: restart ssh
+      systemd:
+        name: ssh
+        state: restarted 

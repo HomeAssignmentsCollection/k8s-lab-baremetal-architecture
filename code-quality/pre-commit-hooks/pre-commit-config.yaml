@@ -1,0 +1,202 @@
+# Pre-commit Configuration
+# This file configures pre-commit hooks for the project
+
+repos:
+  # General hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        description: "Remove trailing whitespace"
+      - id: end-of-file-fixer
+        description: "Ensure files end with a newline"
+      - id: check-yaml
+        description: "Check YAML syntax"
+      - id: check-json
+        description: "Check JSON syntax"
+      - id: check-added-large-files
+        description: "Prevent large files from being committed"
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+        description: "Check for merge conflict artifacts"
+      - id: check-case-conflict
+        description: "Check for files that would conflict in case-insensitive filesystems"
+      - id: check-docstring-first
+        description: "Check that docstrings appear before code"
+      - id: check-executables-have-shebangs
+        description: "Check that executables have shebangs"
+      - id: check-merge-conflict
+        description: "Check for merge conflict artifacts"
+      - id: debug-statements
+        description: "Check for debugger imports and py.test breakpoints"
+      - id: name-tests-test
+        description: "Assert test files are named test_*.py or *_test.py"
+      - id: requirements-txt-fixer
+        description: "Sort requirements.txt and remove duplicate packages"
+
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        description: "Lint YAML files"
+        args: ['--format', 'parsable', '--strict']
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        description: "Lint shell scripts"
+        args: ['--severity=warning']
+
+  # Terraform linting
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.0
+    hooks:
+      - id: terraform_fmt
+        description: "Format Terraform files"
+      - id: terraform_validate
+        description: "Validate Terraform files"
+      - id: terraform_docs
+        description: "Generate Terraform documentation"
+        args: ['--args=--sort-by-required']
+      - id: terraform_tflint
+        description: "Lint Terraform files"
+        args: ['--args=--only=terraform_deprecated_index,terraform_unused_declarations,terraform_comment_syntax']
+
+  # Ansible linting
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v6.22.1
+    hooks:
+      - id: ansible-lint
+        description: "Lint Ansible playbooks"
+        args: ['--format', 'quiet']
+
+  # Kubernetes manifest validation
+  - repo: https://github.com/helm/helm
+    rev: v3.13.3
+    hooks:
+      - id: helm-docs
+        description: "Generate Helm documentation"
+      - id: helm-lint
+        description: "Lint Helm charts"
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        description: "Lint Dockerfiles"
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        description: "Lint Markdown files"
+        args: ['--fix']
+
+  # Spell checking
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.18.1
+    hooks:
+      - id: typos
+        description: "Check for typos in code and documentation"
+
+  # Security scanning
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        description: "Detect secrets in code"
+        args: ['--baseline', '.secrets.baseline']
+
+  # Git hooks
+  - repo: local
+    hooks:
+      - id: k8s-manifest-validator
+        name: "Kubernetes Manifest Validator"
+        description: "Validate Kubernetes manifests"
+        entry: bash code-quality/test-tools/test-manifests.sh
+        language: system
+        files: \.(yaml|yml)$
+        exclude: ^(vendor/|\.git/|\.venv/|venv/)
+
+      - id: shell-script-validator
+        name: "Shell Script Validator"
+        description: "Validate shell scripts"
+        entry: bash code-quality/linters/lint-shell.sh
+        language: system
+        files: \.sh$
+
+      - id: terraform-validator
+        name: "Terraform Validator"
+        description: "Validate Terraform files"
+        entry: bash code-quality/linters/lint-terraform.sh
+        language: system
+        files: \.tf$
+
+      - id: ansible-validator
+        name: "Ansible Validator"
+        description: "Validate Ansible files"
+        entry: bash code-quality/linters/lint-ansible.sh
+        language: system
+        files: \.(yml|yaml)$
+        exclude: ^(vendor/|\.git/|\.venv/|venv/|molecule/|tests/)
+
+# Default settings
+default_language_version:
+  python: python3
+  node: 18
+
+# Global exclude patterns
+exclude: |
+  (?x)^(
+      \.git/|
+      \.venv/|
+      venv/|
+      node_modules/|
+      vendor/|
+      \.terraform/|
+      \.mypy_cache/|
+      \.pytest_cache/|
+      __pycache__/|
+      \.tox/|
+      \.eggs/|
+      dist/|
+      build/|
+      \.coverage|
+      \.DS_Store|
+      \.idea/|
+      \.vscode/|
+      *.pyc|
+      *.pyo|
+      *.pyd|
+      \.Python|
+      *.so|
+      \.mypy_cache/|
+      \.pytest_cache/|
+      \.tox/|
+      \.eggs/|
+      dist/|
+      build/|
+      \.coverage|
+      \.DS_Store|
+      \.idea/|
+      \.vscode/|
+      *.pyc|
+      *.pyo|
+      *.pyd|
+      \.Python|
+      *.so
+  )$
+
+# Fail fast
+fail_fast: false
+
+# Require all hooks to pass
+require_serial: false
+
+# Verbose output
+verbose: true 

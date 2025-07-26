@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-config
+  namespace: kube-system
+data:
+  environment: production
+  log-level: warn
+  resource-limits: high
+  monitoring-enabled: "true"
+  backup-enabled: "true"
+  security-scanning: "true"
+  high-availability: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prod-secrets
+  namespace: kube-system
+type: Opaque
+data:
+  # Base64 encoded values for production
+  database-password: cHJvZF9wYXNzd29yZA==
+  api-key: cHJvZF9hcGlfa2V5
+  jwt-secret: cHJvZF9qd3Rfc2VjcmV0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-app-config
+  namespace: default
+data:
+  app.environment: production
+  app.debug: "false"
+  app.log-level: warn
+  app.cache-ttl: "7200"
+  app.max-connections: "500"
+  app.timeout: "60"
+  app.rate-limit: "1000"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-monitoring-config
+  namespace: monitoring
+data:
+  prometheus.retention: "30d"
+  prometheus.storage-size: "200Gi"
+  grafana.admin-password: "{{ .Values.grafana.adminPassword }}"
+  alertmanager.config: |
+    global:
+      smtp_smarthost: 'smtp.company.com:587'
+      smtp_from: 'alertmanager@company.com'
+    route:
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: 'prod-team'
+    receivers:
+    - name: 'prod-team'
+      email_configs:
+      - to: 'prod-team@company.com'
+      slack_configs:
+      - api_url: 'https://hooks.slack.com/services/XXX/YYY/ZZZ'
+        channel: '#prod-alerts'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-network-config
+  namespace: kube-system
+data:
+  metallb.address-pool: |
+    apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: prod-pool
+      namespace: metallb-system
+    spec:
+      addresses:
+      - 192.168.1.100-192.168.1.150
+  ingress.class: nginx
+  ingress.annotations: |
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "1000"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-storage-config
+  namespace: kube-system
+data:
+  storage-class.default: ssd-storage
+  storage-class.backup: nfs-storage
+  backup.retention: "90d"
+  backup.schedule: "0 1 * * *"
+  backup.enabled: "true"
+  backup.replication: "true" 

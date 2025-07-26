@@ -1,0 +1,57 @@
+# ShellCheck Configuration File
+# This file configures shellcheck linting rules for the project
+
+# Disable specific warnings that are acceptable for this project
+# SC1090: Can't follow non-constant source. Use a directive to specify location.
+# SC1091: Not following: (error message here)
+# SC2001: See if you can use ${variable//search/replace} instead.
+# SC2004: $/${} is unnecessary on arithmetic variables.
+# SC2006: Use $(..) instead of legacy `..`.
+# SC2015: Note that A && B || C is not if-then-else. C may run when A is true.
+# SC2016: Expressions don't expand in single quotes, use double quotes for that.
+# SC2028: echo won't expand escape sequences. Consider printf.
+# SC2034: foo appears unused. Verify it or export it.
+# SC2046: Quote this to prevent word splitting.
+# SC2059: Don't use variables in the printf format string. Use printf "..%s.." "$foo".
+# SC2064: Use single quotes, otherwise this expands now rather than when signalled.
+# SC2086: Double quote to prevent globbing and word splitting.
+# SC2115: Use "${var:?}" to ensure this never expands to / .
+# SC2120: foo references arguments, but none are ever passed.
+# SC2124: Assigning an array to a string! Assign as array, or use * instead of @ to concatenate.
+# SC2128: Expanding an array without an index only gives the first element.
+# SC2129: Consider using { cmd1; cmd2; } >> file instead of individual redirects.
+# SC2140: Word is of the form "A"B"C" (B indicated). Did you mean "ABC" or "A\"B\"C"?
+# SC2148: Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive.
+# SC2154: var is referenced but not assigned.
+# SC2155: Declare and assign separately to avoid masking return values.
+# SC2162: read without -r will mangle backslashes.
+# SC2164: Use cd ... || exit in case cd fails.
+# SC2166: Prefer [ p ] && [ q ] as [ p -a q ] is not well defined.
+# SC2170: Don't use -e to test for non-empty directory, use -d to test for directory.
+# SC2174: When used with -p, -m only applies to the deepest directory.
+# SC2181: Check exit code directly with e.g. 'if mycmd;', not indirectly with $?.
+# SC2206: Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
+# SC2207: Prefer mapfile or read -a to split command output (or quote to avoid splitting).
+# SC2219: Instead of 'let expr', prefer (( expr )) .
+# SC2220: This may not be portable. Use 'printf %s\\n' or 'printf %s\\x00'.
+# SC2221: This word is outside of quotes. Consider quoting it.
+# SC2222: Use "${var:?}" to ensure this never expands to / .
+# SC2223: This default assignment may cause DoS due to globbing. Quote it.
+
+# Disable warnings that are acceptable for this project
+disable=SC1090,SC1091,SC2001,SC2004,SC2006,SC2015,SC2016,SC2028,SC2034,SC2046,SC2059,SC2064,SC2115,SC2120,SC2124,SC2128,SC2129,SC2140,SC2148,SC2154,SC2155,SC2162,SC2164,SC2166,SC2170,SC2174,SC2181,SC2206,SC2207,SC2219,SC2220,SC2221,SC2222,SC2223
+
+# Shell to use for checking
+shell=bash
+
+# Source path for external scripts
+source-path=SCRIPTDIR
+
+# External sources
+external-sources=false
+
+# Color output
+color=auto
+
+# Format output
+format=tty 

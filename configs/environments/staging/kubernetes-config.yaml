@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-config
+  namespace: kube-system
+data:
+  environment: staging
+  log-level: info
+  resource-limits: medium
+  monitoring-enabled: "true"
+  backup-enabled: "true"
+  security-scanning: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: staging-secrets
+  namespace: kube-system
+type: Opaque
+data:
+  # Base64 encoded values for staging
+  database-password: c3RhZ2luZ19wYXNzd29yZA==
+  api-key: c3RhZ2luZ19hcGlfa2V5
+  jwt-secret: c3RhZ2luZ19qd3Rfc2VjcmV0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-app-config
+  namespace: default
+data:
+  app.environment: staging
+  app.debug: "false"
+  app.log-level: info
+  app.cache-ttl: "3600"
+  app.max-connections: "100"
+  app.timeout: "30"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-monitoring-config
+  namespace: monitoring
+data:
+  prometheus.retention: "7d"
+  prometheus.storage-size: "50Gi"
+  grafana.admin-password: admin123
+  alertmanager.config: |
+    global:
+      smtp_smarthost: 'smtp.staging.company.com:587'
+      smtp_from: 'alertmanager@staging.company.com'
+    route:
+      group_by: ['alertname']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'staging-team'
+    receivers:
+    - name: 'staging-team'
+      email_configs:
+      - to: 'staging-team@company.com'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-network-config
+  namespace: kube-system
+data:
+  metallb.address-pool: |
+    apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: staging-pool
+      namespace: metallb-system
+    spec:
+      addresses:
+      - 192.168.1.200-192.168.1.250
+  ingress.class: nginx
+  ingress.annotations: |
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-storage-config
+  namespace: kube-system
+data:
+  storage-class.default: local-storage
+  storage-class.backup: nfs-storage
+  backup.retention: "30d"
+  backup.schedule: "0 2 * * *"
+  backup.enabled: "true" 

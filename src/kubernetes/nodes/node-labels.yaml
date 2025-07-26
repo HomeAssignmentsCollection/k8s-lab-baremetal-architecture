@@ -1,0 +1,69 @@
+# Node labeling configuration for different node types
+# Конфигурация маркировки узлов для различных типов
+
+# Example commands to label nodes (run manually or via Ansible)
+# Примеры команд для маркировки узлов (выполнить вручную или через Ansible)
+
+# Control Plane nodes (Master nodes)
+# Узлы Control Plane (Master узлы)
+# kubectl label nodes k8s-cp-01 node-role.kubernetes.io/control-plane=true
+# kubectl label nodes k8s-cp-02 node-role.kubernetes.io/control-plane=true
+# kubectl label nodes k8s-cp-03 node-role.kubernetes.io/control-plane=true
+
+# Worker nodes - Big type (High performance)
+# Worker узлы - Большой тип (Высокая производительность)
+# kubectl label nodes k8s-worker-big-01 node-type=big
+# kubectl label nodes k8s-worker-big-02 node-type=big
+# kubectl label nodes k8s-worker-big-03 node-type=big
+
+# Worker nodes - Medium type (Standard performance)
+# Worker узлы - Средний тип (Стандартная производительность)
+# kubectl label nodes k8s-worker-medium-01 node-type=medium
+# kubectl label nodes k8s-worker-medium-02 node-type=medium
+# kubectl label nodes k8s-worker-medium-03 node-type=medium
+
+# Worker nodes - Small type (Low performance)
+# Worker узлы - Малый тип (Низкая производительность)
+# kubectl label nodes k8s-worker-small-01 node-type=small
+# kubectl label nodes k8s-worker-small-02 node-type=small
+# kubectl label nodes k8s-worker-small-03 node-type=small
+
+# Worker nodes - Setup type (Development/Testing)
+# Worker узлы - Setup тип (Разработка/Тестирование)
+# kubectl label nodes k8s-worker-setup-01 node-type=setup
+# kubectl label nodes k8s-worker-setup-02 node-type=setup
+# kubectl label nodes k8s-worker-setup-03 node-type=setup
+
+# Additional labels for specific purposes
+# Дополнительные метки для специфических целей
+# kubectl label nodes k8s-worker-big-01 storage-type=ssd
+# kubectl label nodes k8s-worker-big-02 storage-type=ssd
+# kubectl label nodes k8s-worker-big-03 storage-type=ssd
+
+# kubectl label nodes k8s-worker-medium-01 storage-type=hdd
+# kubectl label nodes k8s-worker-medium-02 storage-type=hdd
+# kubectl label nodes k8s-worker-medium-03 storage-type=hdd
+
+# kubectl label nodes k8s-worker-small-01 storage-type=hdd
+# kubectl label nodes k8s-worker-small-02 storage-type=hdd
+# kubectl label nodes k8s-worker-small-03 storage-type=hdd
+
+# kubectl label nodes k8s-worker-setup-01 storage-type=hdd
+# kubectl label nodes k8s-worker-setup-02 storage-type=hdd
+# kubectl label nodes k8s-worker-setup-03 storage-type=hdd
+
+# Node taints for dedicated workloads
+# Node taints для выделенных рабочих нагрузок
+# kubectl taint nodes k8s-worker-big-01 dedicated=jenkins:NoSchedule
+# kubectl taint nodes k8s-worker-big-02 dedicated=monitoring:NoSchedule
+# kubectl taint nodes k8s-worker-big-03 dedicated=artifacts:NoSchedule
+
+# Node tolerations for workloads
+# Node tolerations для рабочих нагрузок
+# Add to pod/deployment specs:
+# Добавить в спецификации pod/deployment:
+# tolerations:
+# - key: "dedicated"
+#   operator: "Equal"
+#   value: "jenkins"
+#   effect: "NoSchedule" 
