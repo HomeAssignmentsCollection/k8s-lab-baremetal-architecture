@@ -1,5 +1,4 @@
 # Jenkins Helm Chart Values for Bare Metal Environment
-# Оптимизировано для bare metal инфраструктуры
 
 controller:
   # Jenkins image and version

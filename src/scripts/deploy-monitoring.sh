@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Скрипт для развертывания системы мониторинга
-# Включает Prometheus, Grafana, Alertmanager, ELK Stack
+# Monitoring System Deployment Script
+# Includes Prometheus, Grafana, Alertmanager, ELK Stack
 
 set -e
 
-# Цвета для вывода
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Функции для логирования
+# Logging functions
 log_info() {
     echo -e "${GREEN}[INFO]${NC} $1"
 }
@@ -24,90 +24,90 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Проверка наличия kubectl
+# Check if kubectl is available
 check_kubectl() {
     if ! command -v kubectl &> /dev/null; then
-        log_error "kubectl не найден. Установите kubectl и попробуйте снова."
+        log_error "kubectl not found. Please install kubectl and try again."
         exit 1
     fi
 }
 
-# Проверка подключения к кластеру
+# Check cluster connectivity
 check_cluster() {
     if ! kubectl cluster-info &> /dev/null; then
-        log_error "Не удается подключиться к кластеру Kubernetes. Проверьте конфигурацию."
+        log_error "Cannot connect to Kubernetes cluster. Please check configuration."
         exit 1
     fi
-    log_info "Подключение к кластеру установлено"
+    log_info "Cluster connection established"
 }
 
-# Создание namespace для мониторинга
+# Create monitoring namespace
 create_monitoring_namespace() {
-    log_info "Создание namespace monitoring..."
+    log_info "Creating monitoring namespace..."
     kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 }
 
-# Развертывание Prometheus
+# Deploy Prometheus
 deploy_prometheus() {
-    log_info "Развертывание Prometheus..."
+    log_info "Deploying Prometheus..."
     
-    # Применение RBAC
+    # Apply RBAC
     kubectl apply -f src/kubernetes/monitoring/prometheus/prometheus-deployment.yaml
     
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=prometheus -n monitoring --timeout=300s
-    log_info "Prometheus развернут успешно"
+    log_info "Prometheus deployed successfully"
 }
 
-# Развертывание Grafana
+# Deploy Grafana
 deploy_grafana() {
-    log_info "Развертывание Grafana..."
+    log_info "Deploying Grafana..."
     
     kubectl apply -f src/kubernetes/monitoring/grafana/grafana-deployment.yaml
     
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=grafana -n monitoring --timeout=300s
-    log_info "Grafana развернут успешно"
+    log_info "Grafana deployed successfully"
 }
 
-# Развертывание Alertmanager
+# Deploy Alertmanager
 deploy_alertmanager() {
-    log_info "Развертывание Alertmanager..."
+    log_info "Deploying Alertmanager..."
     
     kubectl apply -f src/kubernetes/monitoring/alertmanager/alertmanager-deployment.yaml
     
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=alertmanager -n monitoring --timeout=300s
-    log_info "Alertmanager развернут успешно"
+    log_info "Alertmanager deployed successfully"
 }
 
-# Развертывание Elasticsearch
+# Deploy Elasticsearch
 deploy_elasticsearch() {
-    log_info "Развертывание Elasticsearch..."
+    log_info "Deploying Elasticsearch..."
     
     kubectl apply -f src/kubernetes/monitoring/elk/elasticsearch-deployment.yaml
     
-    # Ожидание готовности всех подов
+    # Wait for all pods to be ready
     kubectl wait --for=condition=ready pod -l app=elasticsearch -n monitoring --timeout=600s
-    log_info "Elasticsearch развернут успешно"
+    log_info "Elasticsearch deployed successfully"
 }
 
-# Развертывание Kibana
+# Deploy Kibana
 deploy_kibana() {
-    log_info "Развертывание Kibana..."
+    log_info "Deploying Kibana..."
     
     kubectl apply -f src/kubernetes/monitoring/elk/kibana-deployment.yaml
     
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=kibana -n monitoring --timeout=300s
-    log_info "Kibana развернут успешно"
+    log_info "Kibana deployed successfully"
 }
 
-# Развертывание Node Exporter
+# Deploy Node Exporter
 deploy_node_exporter() {
-    log_info "Развертывание Node Exporter..."
+    log_info "Deploying Node Exporter..."
     
-    # Создание DaemonSet для Node Exporter
+    # Create DaemonSet for Node Exporter
     cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: DaemonSet
@@ -171,16 +171,16 @@ spec:
         effect: NoSchedule
 EOF
 
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=node-exporter -n monitoring --timeout=300s
-    log_info "Node Exporter развернут успешно"
+    log_info "Node Exporter deployed successfully"
 }
 
-# Развертывание Kube State Metrics
+# Deploy Kube State Metrics
 deploy_kube_state_metrics() {
-    log_info "Развертывание Kube State Metrics..."
+    log_info "Deploying Kube State Metrics..."
     
-    # Создание Kube State Metrics
+    # Create Kube State Metrics
     cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -310,34 +310,34 @@ subjects:
   namespace: monitoring
 EOF
 
-    # Ожидание готовности
+    # Wait for readiness
     kubectl wait --for=condition=ready pod -l app=kube-state-metrics -n monitoring --timeout=300s
-    log_info "Kube State Metrics развернут успешно"
+    log_info "Kube State Metrics deployed successfully"
 }
 
-# Проверка статуса развертывания
+# Check deployment status
 check_deployment_status() {
-    log_info "Проверка статуса развертывания..."
+    log_info "Checking deployment status..."
     
-    echo "=== Статус подов в namespace monitoring ==="
+    echo "=== Pod status in monitoring namespace ==="
     kubectl get pods -n monitoring
     
-    echo -e "\n=== Сервисы в namespace monitoring ==="
+    echo -e "\n=== Services in monitoring namespace ==="
     kubectl get services -n monitoring
     
-    echo -e "\n=== Ingress в namespace monitoring ==="
+    echo -e "\n=== Ingress in monitoring namespace ==="
     kubectl get ingress -n monitoring
 }
 
-# Основная функция
+# Main function
 main() {
-    log_info "Начало развертывания системы мониторинга..."
+    log_info "Starting monitoring system deployment..."
     
     check_kubectl
     check_cluster
     create_monitoring_namespace
     
-    # Развертывание компонентов мониторинга
+    # Deploy monitoring components
     deploy_prometheus
     deploy_grafana
     deploy_alertmanager
@@ -346,19 +346,19 @@ main() {
     deploy_node_exporter
     deploy_kube_state_metrics
     
-    # Проверка статуса
+    # Check status
     check_deployment_status
     
-    log_info "Развертывание системы мониторинга завершено!"
-    log_info "Доступные сервисы:"
+    log_info "Monitoring system deployment completed!"
+    log_info "Available services:"
     log_info "- Prometheus: http://prometheus.k8s-lab.local"
     log_info "- Grafana: http://grafana.k8s-lab.local (admin/admin123)"
     log_info "- Alertmanager: http://alertmanager.k8s-lab.local"
     log_info "- Kibana: http://kibana.k8s-lab.local"
 }
 
-# Обработка ошибок
-trap 'log_error "Произошла ошибка. Выход..."; exit 1' ERR
+# Error handling
+trap 'log_error "An error occurred. Exiting..."; exit 1' ERR
 
-# Запуск основной функции
+# Run main function
 main "$@" 

@@ -42,7 +42,6 @@ allowedTopologies:
     - hdd
 ---
 # Example PersistentVolume for local storage
-# Пример PersistentVolume для локального хранилища
 apiVersion: v1
 kind: PersistentVolume
 metadata:

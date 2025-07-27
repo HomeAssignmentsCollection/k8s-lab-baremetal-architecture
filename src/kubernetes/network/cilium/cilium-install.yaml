@@ -1,0 +1,278 @@
+# Cilium CNI Installation Configuration
+
+# Install Cilium using Helm
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cilium
+  labels:
+    name: cilium
+---
+# Cilium ConfigMap for configuration
+# ConfigMap Cilium для конфигурации
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cilium-config
+  namespace: cilium
+data:
+  # Enable IPv4
+  # Включение IPv4
+  enable-ipv4: "true"
+  
+  # Enable IPv6 (optional)
+  # Включение IPv6 (опционально)
+  enable-ipv6: "false"
+  
+  # Enable kube-proxy replacement
+  # Включение замены kube-proxy
+  enable-kube-proxy-replacement: "true"
+  
+  # Enable BPF masquerade
+  # Включение BPF маскарадинга
+  enable-bpf-masquerade: "true"
+  
+  # Enable host reachable services
+  # Включение доступных из хоста сервисов
+  enable-host-reachable-services: "true"
+  
+  # Enable external IPs
+  # Включение внешних IP
+  enable-external-ips: "true"
+  
+  # Enable NodePort
+  # Включение NodePort
+  enable-node-port: "true"
+  
+  # Enable host port
+  # Включение порта хоста
+  enable-host-port: "true"
+  
+  # Enable session affinity
+  # Включение привязки сессий
+  enable-session-affinity: "true"
+  
+  # Enable Bandwidth Manager
+  # Включение менеджера пропускной способности
+  enable-bandwidth-manager: "true"
+  
+  # Enable Local Redirect Policy
+  # Включение политики локального перенаправления
+  enable-local-redirect-policy: "true"
+  
+  # Enable Hubble
+  # Включение Hubble
+  enable-hubble: "true"
+  
+  # Hubble metrics server
+  # Сервер метрик Hubble
+  hubble-metrics-server: "true"
+  
+  # Hubble relay
+  # Релей Hubble
+  hubble-relay: "true"
+  
+  # Hubble UI
+  # UI Hubble
+  hubble-ui: "true"
+  
+  # Enable Prometheus metrics
+  # Включение метрик Prometheus
+  enable-prometheus-metrics: "true"
+  
+  # Monitor aggregation
+  # Агрегация мониторинга
+  monitor-aggregation: "medium"
+  
+  # Preallocate BPF maps
+  # Предварительное выделение BPF карт
+  preallocate-bpf-maps: "true"
+  
+  # Enable auto direct routing
+  # Включение автоматической прямой маршрутизации
+  enable-auto-direct-routing: "true"
+  
+  # Enable endpoint routes
+  # Включение маршрутов конечных точек
+  enable-endpoint-routes: "true"
+  
+  # Enable policy
+  # Включение политик
+  enable-policy: "true"
+  
+  # Enable L7 proxy
+  # Включение L7 прокси
+  enable-l7-proxy: "true"
+  
+  # Enable BPF clock probe
+  # Включение BPF зонда часов
+  enable-bpf-clock-probe: "true"
+  
+  # Enable well known identities
+  # Включение известных идентичностей
+  enable-well-known-identities: "true"
+  
+  # Enable remote node identity
+  # Включение удаленной идентичности узла
+  enable-remote-node-identity: "true"
+  
+  # Enable health checking
+  # Включение проверки здоровья
+  enable-health-checking: "true"
+  
+  # Enable health checking nodeport
+  # Включение проверки здоровья NodePort
+  enable-health-checking-nodeport: "true"
+  
+  # Enable health checking loadbalancer ip
+  # Включение проверки здоровья LoadBalancer IP
+  enable-health-checking-loadbalancer-ip: "true"
+  
+  # Enable health checking with HTTP
+  # Включение проверки здоровья с HTTP
+  enable-health-checking-http: "true"
+  
+  # Enable health checking with HTTP path
+  # Включение проверки здоровья с HTTP путем
+  enable-health-checking-http-path: "/healthz"
+  
+  # Enable health checking with HTTP method
+  # Включение проверки здоровья с HTTP методом
+  enable-health-checking-http-method: "GET"
+  
+  # Enable health checking with HTTP expected status
+  # Включение проверки здоровья с ожидаемым HTTP статусом
+  enable-health-checking-http-expected-status: "200"
+  
+  # Enable health checking with HTTP timeout
+  # Включение проверки здоровья с HTTP таймаутом
+  enable-health-checking-http-timeout: "5s"
+  
+  # Enable health checking with HTTP retries
+  # Включение проверки здоровья с HTTP повторами
+  enable-health-checking-http-retries: "3"
+  
+  # Enable health checking with HTTP interval
+  # Включение проверки здоровья с HTTP интервалом
+  enable-health-checking-http-interval: "30s"
+  
+  # Enable health checking with HTTP grace period
+  # Включение проверки здоровья с HTTP льготным периодом
+  enable-health-checking-http-grace-period: "5s"
+  
+  # Enable health checking with HTTP failure threshold
+  # Включение проверки здоровья с порогом HTTP сбоев
+  enable-health-checking-http-failure-threshold: "3"
+  
+  # Enable health checking with HTTP success threshold
+  # Включение проверки здоровья с порогом HTTP успехов
+  enable-health-checking-http-success-threshold: "1"
+  
+  # Enable health checking with HTTP initial delay
+  # Включение проверки здоровья с начальной HTTP задержкой
+  enable-health-checking-http-initial-delay: "30s"
+  
+  # Enable health checking with HTTP period
+  # Включение проверки здоровья с HTTP периодом
+  enable-health-checking-http-period: "10s"
+  
+  # Enable health checking with HTTP timeout seconds
+  # Включение проверки здоровья с HTTP таймаутом в секундах
+  enable-health-checking-http-timeout-seconds: "5"
+  
+  # Enable health checking with HTTP failure threshold
+  # Включение проверки здоровья с порогом HTTP сбоев
+  enable-health-checking-http-failure-threshold: "3"
+  
+  # Enable health checking with HTTP success threshold
+  # Включение проверки здоровья с порогом HTTP успехов
+  enable-health-checking-http-success-threshold: "1"
+  
+  # Enable health checking with HTTP initial delay seconds
+  # Включение проверки здоровья с начальной HTTP задержкой в секундах
+  enable-health-checking-http-initial-delay-seconds: "30"
+  
+  # Enable health checking with HTTP period seconds
+  # Включение проверки здоровья с HTTP периодом в секундах
+  enable-health-checking-http-period-seconds: "10"
+  
+  # Enable health checking with HTTP liveness probe
+  # Включение проверки здоровья с HTTP liveness пробой
+  enable-health-checking-http-liveness-probe: "true"
+  
+  # Enable health checking with HTTP readiness probe
+  # Включение проверки здоровья с HTTP readiness пробой
+  enable-health-checking-http-readiness-probe: "true"
+  
+  # Enable health checking with HTTP startup probe
+  # Включение проверки здоровья с HTTP startup пробой
+  enable-health-checking-http-startup-probe: "true"
+  
+  # Enable health checking with HTTP exec probe
+  # Включение проверки здоровья с HTTP exec пробой
+  enable-health-checking-http-exec-probe: "true"
+  
+  # Enable health checking with HTTP tcp socket probe
+  # Включение проверки здоровья с HTTP tcp socket пробой
+  enable-health-checking-http-tcp-socket-probe: "true"
+  
+  # Enable health checking with HTTP grpc probe
+  # Включение проверки здоровья с HTTP grpc пробой
+  enable-health-checking-http-grpc-probe: "true"
+  
+  # Enable health checking with HTTP http get probe
+  # Включение проверки здоровья с HTTP http get пробой
+  enable-health-checking-http-http-get-probe: "true"
+  
+  # Enable health checking with HTTP http post probe
+  # Включение проверки здоровья с HTTP http post пробой
+  enable-health-checking-http-http-post-probe: "true"
+  
+  # Enable health checking with HTTP http put probe
+  # Включение проверки здоровья с HTTP http put пробой
+  enable-health-checking-http-http-put-probe: "true"
+  
+  # Enable health checking with HTTP http delete probe
+  # Включение проверки здоровья с HTTP http delete пробой
+  enable-health-checking-http-http-delete-probe: "true"
+  
+  # Enable health checking with HTTP http patch probe
+  # Включение проверки здоровья с HTTP http patch пробой
+  enable-health-checking-http-http-patch-probe: "true"
+  
+  # Enable health checking with HTTP http head probe
+  # Включение проверки здоровья с HTTP http head пробой
+  enable-health-checking-http-http-head-probe: "true"
+  
+  # Enable health checking with HTTP http options probe
+  # Включение проверки здоровья с HTTP http options пробой
+  enable-health-checking-http-http-options-probe: "true"
+  
+  # Enable health checking with HTTP http trace probe
+  # Включение проверки здоровья с HTTP http trace пробой
+  enable-health-checking-http-http-trace-probe: "true"
+  
+  # Enable health checking with HTTP http connect probe
+  # Включение проверки здоровья с HTTP http connect пробой
+  enable-health-checking-http-http-connect-probe: "true"
+  
+  # Enable health checking with HTTP http patch probe
+  # Включение проверки здоровья с HTTP http patch пробой
+  enable-health-checking-http-http-patch-probe: "true"
+  
+  # Enable health checking with HTTP http head probe
+  # Включение проверки здоровья с HTTP http head пробой
+  enable-health-checking-http-http-head-probe: "true"
+  
+  # Enable health checking with HTTP http options probe
+  # Включение проверки здоровья с HTTP http options пробой
+  enable-health-checking-http-http-options-probe: "true"
+  
+  # Enable health checking with HTTP http trace probe
+  # Включение проверки здоровья с HTTP http trace пробой
+  enable-health-checking-http-http-trace-probe: "true"
+  
+  # Enable health checking with HTTP http connect probe
+  # Включение проверки здоровья с HTTP http connect пробой
+  enable-health-checking-http-http-connect-probe: "true" 

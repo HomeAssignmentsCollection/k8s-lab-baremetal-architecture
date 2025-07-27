@@ -1,0 +1,205 @@
+# Calico CNI Installation Configuration
+
+# Install the Tigera Calico operator and custom resource definitions
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: calico-system
+  labels:
+    name: calico-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: calico-apiserver
+  labels:
+    name: calico-apiserver
+---
+# Install Calico operator
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calico-operator
+  namespace: calico-system
+  labels:
+    app: calico-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calico-operator
+  template:
+    metadata:
+      labels:
+        app: calico-operator
+    spec:
+      serviceAccountName: calico-operator
+      containers:
+      - name: calico-operator
+        image: quay.io/tigera/operator:v1.28.0
+        env:
+        - name: WATCH_NAMESPACE
+          value: ""
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: "calico-operator"
+        - name: ENABLE_MULTI_CLUSTER_MANAGEMENT
+          value: "false"
+        resources:
+          requests:
+            memory: 150Mi
+            cpu: 100m
+          limits:
+            memory: 300Mi
+            cpu: 500m
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1001
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-operator
+  namespace: calico-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: calico-operator
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "persistentvolumeclaims", "events", "configmaps", "secrets"]
+  verbs: ["*"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
+  verbs: ["*"]
+- apiGroups: ["extensions"]
+  resources: ["replicasets", "daemonsets"]
+  verbs: ["*"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
+  verbs: ["*"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["*"]
+- apiGroups: ["crd.projectcalico.org"]
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["operator.tigera.io"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-operator
+subjects:
+- kind: ServiceAccount
+  name: calico-operator
+  namespace: calico-system
+---
+# Calico Installation
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  cni:
+    type: Calico
+    ipPools:
+    - blockSize: 26
+      cidr: 10.244.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+  
+  # The default IP pool to use for workload IPs.
+  ipPools:
+  - blockSize: 26
+    cidr: 10.244.0.0/16
+    encapsulation: VXLANCrossSubnet
+    natOutgoing: Enabled
+    nodeSelector: all()
+  
+  # Component resources
+  componentResources:
+  - componentName: Node
+    resourceRequirements:
+      requests:
+        memory: 250Mi
+        cpu: 250m
+      limits:
+        memory: 500Mi
+        cpu: 500m
+  - componentName: Typha
+    resourceRequirements:
+      requests:
+        memory: 64Mi
+        cpu: 100m
+      limits:
+        memory: 500Mi
+        cpu: 1000m
+---
+# Enable prometheus metrics
+apiVersion: operator.tigera.io/v1
+kind: Monitoring
+metadata:
+  name: monitoring
+spec:
+  type: Prometheus
+---
+# Configure BGP peers (optional)
+apiVersion: crd.projectcalico.org/v1
+kind: BGPPeer
+metadata:
+  name: bgp-peer-1
+spec:
+  peerIP: 192.168.1.1
+  asNumber: 64512
+---
+# Configure BGP configuration
+apiVersion: crd.projectcalico.org/v1
+kind: BGPConfiguration
+metadata:
+  name: default
+spec:
+  logSeverityScreen: Info
+  nodeToNodeMeshEnabled: true
+  asNumber: 64512
+---
+# Network policies for Calico
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-k8s-nodes
+spec:
+  selector: has(node-role.kubernetes.io/control-plane)
+  ingress:
+  - action: Allow
+    source:
+      selector: has(node-role.kubernetes.io/control-plane)
+  egress:
+  - action: Allow
+---
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-k8s-workers
+spec:
+  selector: !has(node-role.kubernetes.io/control-plane)
+  ingress:
+  - action: Allow
+    source:
+      selector: !has(node-role.kubernetes.io/control-plane)
+  egress:
+  - action: Allow 

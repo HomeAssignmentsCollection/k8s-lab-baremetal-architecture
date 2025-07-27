@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Улучшенный скрипт для полного развертывания всех компонентов
-# Включает базовую инфраструктуру, мониторинг, лабораторные стенды и безопасность
+# Enhanced Complete Deployment Script for All Components
+# Includes basic infrastructure, monitoring, lab stands, and security
 
 set -e
 
-# Цвета для вывода
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Функции для логирования
+# Logging functions
 log_info() {
     echo -e "${GREEN}[INFO]${NC} $1"
 }
@@ -29,9 +29,9 @@ log_step() {
     echo -e "${BLUE}[STEP]${NC} $1"
 }
 
-# Проверка наличия необходимых инструментов
+# Check for required tools
 check_prerequisites() {
-    log_info "Проверка необходимых инструментов..."
+    log_info "Checking required tools..."
     
     local tools=("kubectl" "helm" "terraform" "ansible")
     local missing_tools=()
@@ -43,39 +43,39 @@ check_prerequisites() {
     done
     
     if [ ${#missing_tools[@]} -ne 0 ]; then
-        log_error "Отсутствуют следующие инструменты: ${missing_tools[*]}"
-        log_info "Установите недостающие инструменты и попробуйте снова."
+        log_error "Missing tools: ${missing_tools[*]}"
+        log_info "Please install missing tools and try again."
         exit 1
     fi
     
-    log_info "Все необходимые инструменты найдены"
+    log_info "All required tools found"
 }
 
-# Проверка подключения к кластеру
+# Check cluster connectivity
 check_cluster() {
-    log_info "Проверка подключения к кластеру Kubernetes..."
+    log_info "Checking Kubernetes cluster connectivity..."
     
     if ! kubectl cluster-info &> /dev/null; then
-        log_error "Не удается подключиться к кластеру Kubernetes. Проверьте конфигурацию."
+        log_error "Cannot connect to Kubernetes cluster. Please check configuration."
         exit 1
     fi
     
     local cluster_info=$(kubectl cluster-info | head -n 1)
-    log_info "Подключение к кластеру установлено: $cluster_info"
+    log_info "Cluster connection established: $cluster_info"
 }
 
-# Создание базовых namespace'ов
+# Create base namespaces
 create_namespaces() {
-    log_step "Создание базовых namespace'ов..."
+    log_step "Creating base namespaces..."
     
     local namespaces=("monitoring" "lab-stands" "gitops" "jenkins" "storage")
     
     for ns in "${namespaces[@]}"; do
-        log_info "Создание namespace: $ns"
+        log_info "Creating namespace: $ns"
         kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
     done
     
-    log_info "Все namespace'ы созданы успешно"
+    log_info "All namespaces created successfully"
 }
 
 # Развертывание базовой инфраструктуры

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Kubernetes Manifests Linter
-# Линтер для анализа манифестов Kubernetes
 
 set -e
 

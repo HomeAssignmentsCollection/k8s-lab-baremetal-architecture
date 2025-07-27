@@ -1,25 +1,20 @@
 # Example Terraform variables configuration
-# Пример конфигурации переменных Terraform
 
 # Infrastructure configuration
-# Конфигурация инфраструктуры
 control_plane_ips = ["192.168.1.10", "192.168.1.11", "192.168.1.12"]
 worker_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22"]
 load_balancer_ip = "192.168.1.100"
 
 # Network configuration
-# Сетевая конфигурация
 network_gateway = "192.168.1.1"
 dns_servers = ["8.8.8.8", "8.8.4.4"]
 
 # SSH configuration
-# Конфигурация SSH
 ssh_user = "ubuntu"
 ssh_private_key_path = "~/.ssh/id_rsa"
 ssh_port = 22
 
 # Kubernetes configuration
-# Конфигурация Kubernetes
 kubernetes_version = "1.28.0"
 container_runtime = "containerd"
 cni_plugin = "flannel"
@@ -29,31 +24,26 @@ cluster_name = "baremetal-cluster"
 cluster_domain = "cluster.local"
 
 # Security configuration
-# Конфигурация безопасности
 enable_rbac = true
 enable_network_policies = true
 enable_pod_security_policies = false
 
 # Monitoring and logging
-# Мониторинг и логирование
 enable_monitoring = true
 enable_logging = true
 enable_ingress = true
 
 # Storage configuration
-# Конфигурация хранилища
 enable_local_storage = true
 enable_nfs_storage = false
 nfs_server = ""
 nfs_path = "/exports"
 
 # Backup configuration
-# Конфигурация резервного копирования
 enable_backup = true
 backup_retention_days = 30
 
 # Tags and labels
-# Теги и метки
 environment = "dev"
 project = "k8s-baremetal-lab"
 owner = "admin" 

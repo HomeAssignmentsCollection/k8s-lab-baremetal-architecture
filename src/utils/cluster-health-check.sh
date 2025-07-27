@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Kubernetes Cluster Health Check Utility
-# Утилита проверки здоровья кластера Kubernetes
 
 set -e
 

@@ -1,5 +1,5 @@
 # Configuration Validation Schema
-# Схема валидации конфигурации
+# Configuration validation schema
 
 apiVersion: jsonschema.dev/v1
 kind: JSONSchema

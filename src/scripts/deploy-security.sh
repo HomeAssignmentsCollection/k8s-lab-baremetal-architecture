@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Скрипт для развертывания компонентов безопасности
-# Включает Network Policies, Pod Security Policies, RBAC
+# Security Components Deployment Script
+# Includes Network Policies, Pod Security Policies, RBAC
 
 set -e
 
-# Цвета для вывода
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Функции для логирования
+# Logging functions
 log_info() {
     echo -e "${GREEN}[INFO]${NC} $1"
 }
@@ -24,46 +24,46 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Проверка наличия kubectl
+# Check if kubectl is available
 check_kubectl() {
     if ! command -v kubectl &> /dev/null; then
-        log_error "kubectl не найден. Установите kubectl и попробуйте снова."
+        log_error "kubectl not found. Please install kubectl and try again."
         exit 1
     fi
 }
 
-# Проверка подключения к кластеру
+# Check cluster connectivity
 check_cluster() {
     if ! kubectl cluster-info &> /dev/null; then
-        log_error "Не удается подключиться к кластеру Kubernetes. Проверьте конфигурацию."
+        log_error "Cannot connect to Kubernetes cluster. Please check configuration."
         exit 1
     fi
-    log_info "Подключение к кластеру установлено"
+    log_info "Cluster connection established"
 }
 
-# Развертывание Network Policies
+# Deploy Network Policies
 deploy_network_policies() {
-    log_info "Развертывание Network Policies..."
+    log_info "Deploying Network Policies..."
     
     kubectl apply -f src/kubernetes/security/network-policies/network-policies.yaml
     
-    log_info "Network Policies развернуты успешно"
+    log_info "Network Policies deployed successfully"
 }
 
-# Развертывание Pod Security Policies
+# Deploy Pod Security Policies
 deploy_pod_security_policies() {
-    log_info "Развертывание Pod Security Policies..."
+    log_info "Deploying Pod Security Policies..."
     
     kubectl apply -f src/kubernetes/security/pod-security/pod-security-policies.yaml
     
-    log_info "Pod Security Policies развернуты успешно"
+    log_info "Pod Security Policies deployed successfully"
 }
 
-# Создание дополнительных RBAC правил
+# Create additional RBAC rules
 create_additional_rbac() {
-    log_info "Создание дополнительных RBAC правил..."
+    log_info "Creating additional RBAC rules..."
     
-    # Создание ClusterRole для мониторинга
+    # Create ClusterRole for monitoring
     cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

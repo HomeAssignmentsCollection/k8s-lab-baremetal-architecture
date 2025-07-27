@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # Kubernetes Baremetal Lab - Installation Verification Script
-# Скрипт проверки установки Kubernetes Baremetal Lab
 
 set -e
 
 # Colors for output
-# Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -14,7 +12,6 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Function to print colored output
-# Функция для вывода цветного текста
 print_status() {
     local color=$1
     local message=$2
@@ -22,7 +19,6 @@ print_status() {
 }
 
 # Function to check command existence
-# Функция для проверки существования команды
 check_command() {
     local cmd=$1
     if command -v "$cmd" &> /dev/null; then
@@ -35,7 +31,6 @@ check_command() {
 }
 
 # Function to check Kubernetes cluster status
-# Функция для проверки статуса кластера Kubernetes
 check_kubernetes_cluster() {
     print_status "$BLUE" "Checking Kubernetes cluster status..."
     
@@ -47,7 +42,6 @@ check_kubernetes_cluster() {
     print_status "$GREEN" "✓ Connected to Kubernetes cluster"
     
     # Check nodes
-    # Проверка узлов
     print_status "$BLUE" "Checking cluster nodes..."
     local nodes=$(kubectl get nodes --no-headers | wc -l)
     local ready_nodes=$(kubectl get nodes --no-headers | grep -c "Ready")
@@ -62,7 +56,6 @@ check_kubernetes_cluster() {
     fi
     
     # Check system pods
-    # Проверка системных подов
     print_status "$BLUE" "Checking system pods..."
     local system_pods=$(kubectl get pods -n kube-system --no-headers | wc -l)
     local running_pods=$(kubectl get pods -n kube-system --no-headers | grep -c "Running")
@@ -78,12 +71,10 @@ check_kubernetes_cluster() {
 }
 
 # Function to check network connectivity
-# Функция для проверки сетевой связности
 check_network() {
     print_status "$BLUE" "Checking network connectivity..."
     
     # Check if we can reach the API server
-    # Проверка доступности API сервера
     if kubectl get nodes &> /dev/null; then
         print_status "$GREEN" "✓ API server is reachable"
     else
@@ -92,7 +83,6 @@ check_network() {
     fi
     
     # Check DNS resolution
-    # Проверка DNS разрешения
     if nslookup kubernetes.default.svc.cluster.local &> /dev/null; then
         print_status "$GREEN" "✓ DNS resolution is working"
     else

@@ -1,5 +1,5 @@
 # Kubernetes Configuration Template
-# Шаблон конфигурации Kubernetes
+# Kubernetes configuration template
 
 apiVersion: v1
 kind: ConfigMap

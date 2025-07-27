@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Configuration Generation Script
-# Скрипт генерации конфигурации
 
 set -e
 
@@ -109,10 +108,8 @@ generate_terraform_vars() {
     # Generate terraform.tfvars
     cat > "$output_file" << EOF
 # Terraform variables for $env environment
-# Переменные Terraform для окружения $env
 
 # Infrastructure configuration
-# Конфигурация инфраструктуры
 control_plane_ips = $control_plane_ips
 big_worker_ips = $big_worker_ips
 medium_worker_ips = $medium_worker_ips
@@ -121,18 +118,15 @@ storage_ips = $storage_ips
 load_balancer_ip = $load_balancer_ip
 
 # Network configuration
-# Сетевая конфигурация
 network_gateway = "192.168.1.1"
 dns_servers = ["8.8.8.8", "8.8.4.4"]
 
 # SSH configuration
-# Конфигурация SSH
 ssh_user = "ubuntu"
 ssh_private_key_path = "~/.ssh/id_rsa"
 ssh_port = 22
 
 # Kubernetes configuration
-# Конфигурация Kubernetes
 kubernetes_version = "1.28.0"
 container_runtime = "containerd"
 cni_plugin = "flannel"
@@ -142,31 +136,26 @@ cluster_name = "baremetal-cluster-$env"
 cluster_domain = "cluster.local"
 
 # Security configuration
-# Конфигурация безопасности
 enable_rbac = true
 enable_network_policies = true
 enable_pod_security_policies = false
 
 # Monitoring and logging
-# Мониторинг и логирование
 enable_monitoring = true
 enable_logging = true
 enable_ingress = true
 
 # Storage configuration
-# Конфигурация хранилища
 enable_local_storage = true
 enable_nfs_storage = false
 nfs_server = ""
 nfs_path = "/exports"
 
 # Backup configuration
-# Конфигурация резервного копирования
 enable_backup = true
 backup_retention_days = 30
 
 # Tags and labels
-# Теги и метки
 environment = $environment
 project = "k8s-baremetal-lab"
 owner = "admin"
@@ -207,7 +196,6 @@ generate_kubernetes_secrets() {
     # Generate secrets.yaml
     cat > "$output_file" << EOF
 # Kubernetes Secrets for $env environment
-# Секреты Kubernetes для окружения $env
 apiVersion: v1
 kind: Secret
 metadata:

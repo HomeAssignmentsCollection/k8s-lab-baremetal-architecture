@@ -1,5 +1,5 @@
 # Development Environment Kubernetes Configuration
-# Конфигурация Kubernetes для среды разработки
+# Kubernetes configuration for development environment
 
 apiVersion: v1
 kind: ConfigMap

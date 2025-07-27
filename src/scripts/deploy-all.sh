@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # Kubernetes Baremetal Lab - Complete Deployment Script
-# Скрипт полного развертывания Kubernetes Baremetal Lab
 
 set -e
 
 # Colors for output
-# Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -14,7 +12,6 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Function to print colored output
-# Функция для вывода цветного текста
 print_status() {
     local color=$1
     local message=$2

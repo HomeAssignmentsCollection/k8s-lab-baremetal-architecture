@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Kubernetes Manifests Test Suite
-# Тестовый набор для валидации манифестов Kubernetes
 
 set -e
 
