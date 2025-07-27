@@ -25,7 +25,8 @@ LOG_FILE="/tmp/hardware-health-check-$(date +%Y%m%d-%H%M%S).log"
 log_message() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "[$timestamp] [$level] $message" | tee -a "$LOG_FILE"
 }
 
@@ -140,8 +141,6 @@ check_disk_usage() {
     if command_exists "df"; then
         # Check all mounted filesystems
         df -h | grep -E '^/dev/' | while read -r line; do
-            local filesystem
-            filesystem=$(echo "$line" | awk '{print $1}')
             local mount_point
             mount_point=$(echo "$line" | awk '{print $6}')
             local usage_percent
@@ -160,8 +159,6 @@ check_disk_usage() {
         
         # Check inode usage
         df -i | grep -E '^/dev/' | while read -r line; do
-            local filesystem
-            filesystem=$(echo "$line" | awk '{print $1}')
             local mount_point
             mount_point=$(echo "$line" | awk '{print $6}')
             local inode_usage

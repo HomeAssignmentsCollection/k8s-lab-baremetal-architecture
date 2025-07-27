@@ -11,12 +11,10 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
 # Configuration
 LOG_DIR="/tmp/k8s-troubleshooting"
@@ -27,7 +25,8 @@ REPORT_DIR="/tmp/k8s-reports"
 log_message() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "[$timestamp] [$level] $message" | tee -a "$LOG_FILE"
 }
 
@@ -257,7 +256,7 @@ collect_logs() {
         # Collect system information
         print_result "OK" "Collecting system information..."
         uname -a > "$log_collection_dir/system-info.log" 2>/dev/null || true
-        cat /etc/os-release > "$log_collection_dir/os-info.log" 2>/dev/null || true
+        grep PRETTY_NAME /etc/os-release > "$log_collection_dir/os-info.log" 2>/dev/null || true
         free -h > "$log_collection_dir/memory-info.log" 2>/dev/null || true
         df -h > "$log_collection_dir/disk-info.log" 2>/dev/null || true
         ip addr > "$log_collection_dir/network-info.log" 2>/dev/null || true
@@ -289,7 +288,7 @@ This report provides a comprehensive overview of the Kubernetes cluster health s
 ## System Information
 
 - **Hostname:** $(hostname)
-- **OS:** $(cat /etc/os-release | grep PRETTY_NAME | cut -d'"' -f2 2>/dev/null || echo "Unknown")
+- **OS:** $(grep PRETTY_NAME /etc/os-release | cut -d'"' -f2 2>/dev/null || echo "Unknown")
 - **Kernel:** $(uname -r)
 - **Architecture:** $(uname -m)
 
@@ -299,7 +298,7 @@ This report provides a comprehensive overview of the Kubernetes cluster health s
 $(if [[ -f "$LOG_DIR/hardware-health-check-$(date +%Y%m%d)*.log" ]]; then
     echo "Hardware health check log available"
     echo "Summary:"
-    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/hardware-health-check-$(date +%Y%m%d)*.log | tail -10 || echo "No results found"
+    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/hardware-health-check-"$(date +%Y%m%d)"*.log | tail -10 || echo "No results found"
 else
     echo "Hardware health check not performed or log not found"
 fi)
@@ -308,7 +307,7 @@ fi)
 $(if [[ -f "$LOG_DIR/config-health-check-$(date +%Y%m%d)*.log" ]]; then
     echo "Configuration health check log available"
     echo "Summary:"
-    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/config-health-check-$(date +%Y%m%d)*.log | tail -10 || echo "No results found"
+    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/config-health-check-"$(date +%Y%m%d)"*.log | tail -10 || echo "No results found"
 else
     echo "Configuration health check not performed or log not found"
 fi)
@@ -317,7 +316,7 @@ fi)
 $(if [[ -f "$LOG_DIR/kubernetes-health-check-$(date +%Y%m%d)*.log" ]]; then
     echo "Kubernetes health check log available"
     echo "Summary:"
-    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/kubernetes-health-check-$(date +%Y%m%d)*.log | tail -10 || echo "No results found"
+    grep -E "(PASS|WARNING|ERROR):" "$LOG_DIR"/kubernetes-health-check-"$(date +%Y%m%d)"*.log | tail -10 || echo "No results found"
 else
     echo "Kubernetes health check not performed or log not found"
 fi)
@@ -445,7 +444,6 @@ run_command() {
 main() {
     # Parse command line arguments
     local command="all"
-    local verbose=false
     local quiet=false
     
     while [[ $# -gt 0 ]]; do
@@ -455,7 +453,6 @@ main() {
                 exit 0
                 ;;
             -v|--verbose)
-                verbose=true
                 shift
                 ;;
             -q|--quiet)
@@ -502,31 +499,31 @@ main() {
     
     # Print summary
     if [[ "$quiet" != "true" ]]; then
-        echo -e "\n${PURPLE}=== Summary ===${NC}"
+        echo -e "\n${BLUE}=== Summary ===${NC}"
         echo "Troubleshooting completed at: $(date)"
         echo "Log file: $LOG_FILE"
         echo "Report directory: $REPORT_DIR"
         
-    # Count results from log
-    local success_count
-    success_count=$(grep -c "SUCCESS:" "$LOG_FILE" 2>/dev/null || echo "0")
-    local warning_count
-    warning_count=$(grep -c "WARNING:" "$LOG_FILE" 2>/dev/null || echo "0")
-    local error_count
-    error_count=$(grep -c "ERROR:" "$LOG_FILE" 2>/dev/null || echo "0")
-    
-    echo "Results: $success_count successful, $warning_count warnings, $error_count errors"
-    
-    if [[ "$error_count" -gt 0 ]]; then
-        echo -e "${RED}Some errors were encountered. Please review the logs.${NC}"
-        exit 1
-    elif [[ "$warning_count" -gt 0 ]]; then
-        echo -e "${YELLOW}Some warnings were encountered. Please review the logs.${NC}"
-        exit 2
-    else
-        echo -e "${GREEN}All checks completed successfully!${NC}"
-        exit 0
-    fi
+        # Count results from log
+        local success_count
+        success_count=$(grep -c "SUCCESS:" "$LOG_FILE" 2>/dev/null || echo "0")
+        local warning_count
+        warning_count=$(grep -c "WARNING:" "$LOG_FILE" 2>/dev/null || echo "0")
+        local error_count
+        error_count=$(grep -c "ERROR:" "$LOG_FILE" 2>/dev/null || echo "0")
+        
+        echo "Results: $success_count successful, $warning_count warnings, $error_count errors"
+        
+        if [[ "$error_count" -gt 0 ]]; then
+            echo -e "${RED}Some errors were encountered. Please review the logs.${NC}"
+            exit 1
+        elif [[ "$warning_count" -gt 0 ]]; then
+            echo -e "${YELLOW}Some warnings were encountered. Please review the logs.${NC}"
+            exit 2
+        else
+            echo -e "${GREEN}All checks completed successfully!${NC}"
+            exit 0
+        fi
     fi
 }
 
