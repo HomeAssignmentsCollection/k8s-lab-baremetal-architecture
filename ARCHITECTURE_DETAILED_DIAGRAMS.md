@@ -28,6 +28,7 @@ graph TB
         MON[Monitoring: Prometheus + Grafana]
         LOG[Logging: ELK Stack]
         ART[Artifacts: Artifactory]
+        TROUBLESHOOT[Logging & Troubleshooting]
     end
     
     TF --> ANS
@@ -46,6 +47,7 @@ graph TB
     MON --> NS
     LOG --> NS
     ART --> NS
+    TROUBLESHOOT --> NS
 ```
 
 ---
@@ -581,6 +583,63 @@ graph TB
 
 ---
 
+## 13. Logging and Troubleshooting Architecture
+
+```mermaid
+graph TB
+    subgraph "Health Check Components"
+        HW_CHECK[Hardware Health Check]
+        CONFIG_CHECK[Configuration Health Check]
+        K8S_CHECK[Kubernetes Health Check]
+    end
+    
+    subgraph "Backup and Recovery"
+        ETCD_BACKUP[etcd Backup Tool]
+        BACKUP_VERIFY[Backup Verification]
+        RESTORE_TEST[Restore Testing]
+    end
+    
+    subgraph "Log Collection"
+        SYS_LOGS[System Logs]
+        K8S_LOGS[Kubernetes Logs]
+        APP_LOGS[Application Logs]
+        LOG_AGG[Log Aggregation]
+    end
+    
+    subgraph "Diagnostic Tools"
+        TROUBLESHOOT_TOOLBOX[Main Toolbox Script]
+        METHODOLOGY[Troubleshooting Methodology]
+        LOGGING_STRATEGY[Logging Strategy]
+    end
+    
+    subgraph "Reporting and Analysis"
+        HEALTH_REPORT[Health Reports]
+        DIAGNOSTIC_REPORT[Diagnostic Reports]
+        RECOMMENDATIONS[Recommendations]
+    end
+    
+    HW_CHECK --> TROUBLESHOOT_TOOLBOX
+    CONFIG_CHECK --> TROUBLESHOOT_TOOLBOX
+    K8S_CHECK --> TROUBLESHOOT_TOOLBOX
+    ETCD_BACKUP --> TROUBLESHOOT_TOOLBOX
+    BACKUP_VERIFY --> TROUBLESHOOT_TOOLBOX
+    RESTORE_TEST --> TROUBLESHOOT_TOOLBOX
+    
+    SYS_LOGS --> LOG_AGG
+    K8S_LOGS --> LOG_AGG
+    APP_LOGS --> LOG_AGG
+    LOG_AGG --> TROUBLESHOOT_TOOLBOX
+    
+    METHODOLOGY --> TROUBLESHOOT_TOOLBOX
+    LOGGING_STRATEGY --> TROUBLESHOOT_TOOLBOX
+    
+    TROUBLESHOOT_TOOLBOX --> HEALTH_REPORT
+    TROUBLESHOOT_TOOLBOX --> DIAGNOSTIC_REPORT
+    TROUBLESHOOT_TOOLBOX --> RECOMMENDATIONS
+```
+
+---
+
 ## Summary
 
 These detailed diagrams provide a comprehensive view of:
@@ -597,5 +656,6 @@ These detailed diagrams provide a comprehensive view of:
 10. **Node Architecture** - Resource allocation and workload distribution
 11. **Deployment Flow** - End-to-end deployment process
 12. **Disaster Recovery** - Backup and recovery procedures
+13. **Logging and Troubleshooting** - Health checks, diagnostics, and maintenance tools
 
 Each diagram shows the relationships between components and the data flow within the system, providing a complete understanding of the bare metal Kubernetes lab architecture. 
