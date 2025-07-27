@@ -27,6 +27,26 @@ deploy_namespace() {
     print_status "$GREEN" "✓ Namespace $namespace deployed"
 }
 
+# Function to deploy secrets management
+# Функция для развертывания управления секретами
+deploy_secrets_management() {
+    print_status "$BLUE" "Deploying secrets management..."
+    
+    # Check if generated secrets exist, if not generate them
+    if [[ ! -f "src/kubernetes/secrets_management/generated-secrets.yaml" ]]; then
+        print_status "$YELLOW" "⚠️  Generated secrets not found, creating them..."
+        ./src/kubernetes/secrets_management/generate-secrets.sh
+    fi
+    
+    # Deploy generated secrets
+    kubectl apply -f src/kubernetes/secrets_management/generated-secrets.yaml
+    
+    # Deploy External Secrets Operator (optional)
+    # kubectl apply -f src/kubernetes/secrets_management/external-secrets-operator.yaml
+    
+    print_status "$GREEN" "✓ Secrets management deployed"
+}
+
 # Function to deploy storage
 # Функция для развертывания хранилища
 deploy_storage() {
@@ -54,6 +74,8 @@ deploy_monitoring() {
     
     # Deploy Prometheus
     kubectl apply -f src/kubernetes/monitoring/prometheus-config.yaml
+    kubectl apply -f src/kubernetes/monitoring/prometheus/prometheus-deployment.yaml
+    kubectl apply -f src/kubernetes/monitoring/prometheus/prometheus-hpa.yaml
     
     # Deploy Grafana
     kubectl apply -f src/kubernetes/monitoring/grafana/grafana-deployment.yaml
@@ -68,6 +90,7 @@ deploy_cicd() {
     
     # Deploy Jenkins
     kubectl apply -f src/kubernetes/jenkins/jenkins-deployment.yaml
+    kubectl apply -f src/kubernetes/jenkins/jenkins-hpa.yaml
     
     print_status "$GREEN" "✓ CI/CD components deployed"
 }
@@ -101,8 +124,23 @@ deploy_lab_apps() {
     
     # Deploy example app
     kubectl apply -f src/kubernetes/lab-stands/example-app.yaml
+    kubectl apply -f src/kubernetes/lab-stands/example-app-hpa.yaml
     
     print_status "$GREEN" "✓ Lab applications deployed"
+}
+
+# Function to deploy security policies
+# Функция для развертывания политик безопасности
+deploy_security_policies() {
+    print_status "$BLUE" "Deploying security policies..."
+    
+    # Deploy Pod Security Policies
+    kubectl apply -f src/kubernetes/security/pod-security/pod-security-policies.yaml
+    
+    # Deploy Network Policies
+    kubectl apply -f src/kubernetes/security/network-policies/network-policies.yaml
+    
+    print_status "$GREEN" "✓ Security policies deployed"
 }
 
 # Function to label nodes
@@ -172,7 +210,10 @@ main() {
     # 1. Deploy namespaces
     deploy_namespace "all"
     
-    # 2. Deploy storage
+    # 2. Deploy secrets management
+    deploy_secrets_management
+    
+    # 3. Deploy storage
     deploy_storage
     
     # 3. Deploy network components
@@ -193,13 +234,16 @@ main() {
     # 8. Deploy lab applications
     deploy_lab_apps
     
-    # 9. Label nodes (manual step)
+    # 9. Deploy security policies
+    deploy_security_policies
+    
+    # 10. Label nodes (manual step)
     label_nodes
     
-    # 10. Wait for deployments
+    # 11. Wait for deployments
     wait_for_deployments
     
-    # 11. Show service URLs
+    # 12. Show service URLs
     show_service_urls
     
     print_status "$GREEN" "Deployment completed successfully!"

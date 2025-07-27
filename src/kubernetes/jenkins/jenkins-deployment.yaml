@@ -35,6 +35,16 @@ spec:
           value: "-Djenkins.install.runSetupWizard=false"
         - name: JENKINS_OPTS
           value: "--prefix=/jenkins"
+        - name: JENKINS_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-admin-secret
+              key: admin-password
+        - name: JENKINS_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-admin-secret
+              key: admin-username
         volumeMounts:
         - name: jenkins-home
           mountPath: /var/jenkins_home
@@ -128,7 +138,7 @@ data:
           allowsSignup: false
           users:
             - id: "admin"
-              password: "admin"
+              password: "${JENKINS_ADMIN_PASSWORD}"
       authorizationStrategy:
         globalMatrix:
           permissions:

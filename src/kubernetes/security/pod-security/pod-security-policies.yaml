@@ -1,4 +1,8 @@
-apiVersion: policy/v1
+# Pod Security Policies for Kubernetes
+# Политики безопасности подов для кластера Kubernetes
+
+# Restricted Policy - Most Secure
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: restricted-psp
@@ -36,7 +40,8 @@ spec:
         max: 65535
   readOnlyRootFilesystem: true
 ---
-apiVersion: policy/v1
+# Privileged Policy - For System Components
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: privileged-psp
@@ -48,9 +53,6 @@ spec:
   volumes:
     - '*'
   hostNetwork: true
-  hostPorts:
-    - min: 0
-      max: 65535
   hostIPC: true
   hostPID: true
   runAsUser:
@@ -63,6 +65,38 @@ spec:
     rule: 'RunAsAny'
   readOnlyRootFilesystem: false
 ---
+# Baseline Policy - Moderate Security
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: baseline-psp
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+    - 'hostPath'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+  readOnlyRootFilesystem: false
+---
+# RBAC for Pod Security Policies
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -83,6 +117,17 @@ rules:
   verbs: ['use']
   resourceNames: ['privileged-psp']
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: psp-baseline
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['baseline-psp']
+---
+# Bind PSP to namespaces
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -110,4 +155,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: kube-system 
+  namespace: kube-system
+- kind: ServiceAccount
+  name: default
+  namespace: ingress-nginx 
