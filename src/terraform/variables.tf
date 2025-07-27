@@ -1,8 +1,8 @@
 # Terraform variables for Kubernetes Baremetal Lab
-# Переменные Terraform для Kubernetes Baremetal Lab
+# Terraform variables for Kubernetes Baremetal Lab
 
 # Network configuration
-# Сетевая конфигурация
+# Network configuration
 variable "network_cidr" {
   description = "Network CIDR block"
   type        = string
@@ -22,7 +22,7 @@ variable "dns_servers" {
 }
 
 # Node IPs
-# IP адреса узлов
+# Node IPs
 variable "control_plane_ips" {
   description = "Control plane node IPs"
   type        = list(string)
@@ -42,7 +42,7 @@ variable "load_balancer_ip" {
 }
 
 # Kubernetes configuration
-# Конфигурация Kubernetes
+# Kubernetes configuration
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
@@ -62,7 +62,7 @@ variable "service_cidr" {
 }
 
 # Node configuration
-# Конфигурация узлов
+# Node configuration
 variable "node_prefix" {
   description = "Node name prefix"
   type        = string

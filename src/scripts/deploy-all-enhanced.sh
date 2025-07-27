@@ -79,31 +79,31 @@ create_namespaces() {
     log_info "All namespaces created successfully"
 }
 
-# Развертывание базовой инфраструктуры
+# Deploy basic infrastructure
 deploy_base_infrastructure() {
     log_step "Развертывание базовой инфраструктуры..."
     
-    # Применение базовых конфигураций
+    # Apply basic configurations
     log_info "Применение базовых конфигураций..."
     kubectl apply -f src/kubernetes/namespaces/all-namespaces.yaml
     kubectl apply -f src/kubernetes/storage/storage-classes.yaml
     kubectl apply -f src/kubernetes/network/metallb-config.yaml
     
-    # Развертывание Ingress Controller
+    # Deploy Ingress Controller
     log_info "Развертывание Ingress Controller..."
     kubectl apply -f src/kubernetes/ingress/nginx-ingress.yaml
     
-    # Ожидание готовности Ingress Controller
+    # Wait for Ingress Controller readiness
     kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s
     
     log_info "Базовая инфраструктура развернута успешно"
 }
 
-# Развертывание системы мониторинга
+# Deploy monitoring system
 deploy_monitoring() {
     log_step "Развертывание системы мониторинга..."
     
-    # Запуск скрипта развертывания мониторинга
+    # Run monitoring deployment script
     if [ -f "src/scripts/deploy-monitoring.sh" ]; then
         log_info "Запуск скрипта развертывания мониторинга..."
         ./src/scripts/deploy-monitoring.sh
@@ -112,11 +112,11 @@ deploy_monitoring() {
     fi
 }
 
-# Развертывание лабораторных стендов
+# Deploy lab environments
 deploy_lab_stands() {
     log_step "Развертывание лабораторных стендов..."
     
-    # Запуск скрипта развертывания лабораторных стендов
+    # Run lab environments deployment script
     if [ -f "src/scripts/deploy-lab-stands.sh" ]; then
         log_info "Запуск скрипта развертывания лабораторных стендов..."
         ./src/scripts/deploy-lab-stands.sh
@@ -125,11 +125,11 @@ deploy_lab_stands() {
     fi
 }
 
-# Развертывание компонентов безопасности
+# Deploy security components
 deploy_security() {
     log_step "Развертывание компонентов безопасности..."
     
-    # Запуск скрипта развертывания безопасности
+    # Run security deployment script
     if [ -f "src/scripts/deploy-security.sh" ]; then
         log_info "Запуск скрипта развертывания безопасности..."
         ./src/scripts/deploy-security.sh
@@ -138,18 +138,18 @@ deploy_security() {
     fi
 }
 
-# Развертывание GitOps компонентов
+# Deploy GitOps components
 deploy_gitops() {
     log_step "Развертывание GitOps компонентов..."
     
-    # Развертывание ArgoCD
+    # Deploy ArgoCD
     log_info "Развертывание ArgoCD..."
     kubectl apply -f src/kubernetes/gitops/argocd/argocd-install.yaml
     
-    # Ожидание готовности ArgoCD
+    # Wait for ArgoCD readiness
     kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -n argocd --timeout=300s
     
-    # Развертывание Flux (опционально)
+    # Deploy Flux (optional)
     if [ -f "src/kubernetes/gitops/flux/flux-install.yaml" ]; then
         log_info "Развертывание Flux..."
         kubectl apply -f src/kubernetes/gitops/flux/flux-install.yaml
@@ -158,18 +158,18 @@ deploy_gitops() {
     log_info "GitOps компоненты развернуты успешно"
 }
 
-# Развертывание CI/CD компонентов
+# Deploy CI/CD components
 deploy_cicd() {
     log_step "Развертывание CI/CD компонентов..."
     
-    # Развертывание Jenkins
+    # Deploy Jenkins
     log_info "Развертывание Jenkins..."
     kubectl apply -f src/kubernetes/jenkins/jenkins-deployment.yaml
     
-    # Ожидание готовности Jenkins
+    # Wait for Jenkins readiness
     kubectl wait --for=condition=ready pod -l app=jenkins -n jenkins --timeout=300s
     
-    # Развертывание Tekton (опционально)
+    # Deploy Tekton (optional)
     if [ -f "src/kubernetes/tekton/tekton-install.yaml" ]; then
         log_info "Развертывание Tekton..."
         kubectl apply -f src/kubernetes/tekton/tekton-install.yaml
@@ -178,7 +178,7 @@ deploy_cicd() {
     log_info "CI/CD компоненты развернуты успешно"
 }
 
-# Проверка статуса развертывания
+# Check deployment status
 check_deployment_status() {
     log_step "Проверка статуса развертывания..."
     
@@ -202,7 +202,7 @@ check_deployment_status() {
     kubectl get ingress --all-namespaces
 }
 
-# Создание отчета о развертывании
+# Create deployment report
 create_deployment_report() {
     log_step "Создание отчета о развертывании..."
     
@@ -239,16 +239,16 @@ create_deployment_report() {
     log_info "Отчет сохранен в файл: $report_file"
 }
 
-# Функция очистки при ошибке
+# Error cleanup function
 cleanup_on_error() {
     log_error "Произошла ошибка во время развертывания"
     log_info "Выполняется очистка..."
     
-    # Здесь можно добавить логику очистки при необходимости
+    # Here you can add cleanup logic if needed
     log_warn "Для полной очистки выполните: kubectl delete namespace monitoring lab-stands gitops jenkins argocd"
 }
 
-# Основная функция
+# Main function
 main() {
     local start_time
     start_time=$(date +%s)
@@ -256,11 +256,11 @@ main() {
     log_info "Начало полного развертывания k8s-lab-baremetal-architecture..."
     log_info "Время начала: $(date)"
     
-    # Проверки
+    # Checks
     check_prerequisites
     check_cluster
     
-    # Развертывание компонентов
+    # Deploy components
     create_namespaces
     deploy_base_infrastructure
     deploy_monitoring
@@ -269,7 +269,7 @@ main() {
     deploy_gitops
     deploy_cicd
     
-    # Проверка и отчет
+    # Check and report
     check_deployment_status
     create_deployment_report
     
@@ -285,11 +285,11 @@ main() {
     echo -e "${BLUE}Проверьте отчет для получения дополнительной информации.${NC}"
 }
 
-# Обработка ошибок
+# Error handling
 trap 'cleanup_on_error; exit 1' ERR
 
-# Обработка прерывания
+# Interrupt handling
 trap 'log_warn "Получен сигнал прерывания. Завершение..."; exit 1' INT TERM
 
-# Запуск основной функции
+# Run main function
 main "$@" 

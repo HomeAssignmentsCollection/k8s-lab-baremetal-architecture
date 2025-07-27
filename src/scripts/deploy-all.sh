@@ -19,7 +19,7 @@ print_status() {
 }
 
 # Function to deploy namespace
-# Функция для развертывания namespace
+# Function to deploy namespace
 deploy_namespace() {
     local namespace=$1
     print_status "$BLUE" "Deploying namespace: $namespace"
@@ -28,7 +28,7 @@ deploy_namespace() {
 }
 
 # Function to deploy secrets management
-# Функция для развертывания управления секретами
+# Function to deploy secrets management
 deploy_secrets_management() {
     print_status "$BLUE" "Deploying secrets management..."
     
@@ -48,7 +48,7 @@ deploy_secrets_management() {
 }
 
 # Function to deploy storage
-# Функция для развертывания хранилища
+# Function to deploy storage
 deploy_storage() {
     print_status "$BLUE" "Deploying storage classes and volumes..."
     kubectl apply -f src/kubernetes/storage/storage-classes.yaml
@@ -56,7 +56,7 @@ deploy_storage() {
 }
 
 # Function to deploy network components
-# Функция для развертывания сетевых компонентов
+# Function to deploy network components
 deploy_network() {
     print_status "$BLUE" "Deploying MetalLB..."
     kubectl apply -f src/kubernetes/network/metallb-config.yaml
@@ -68,7 +68,7 @@ deploy_network() {
 }
 
 # Function to deploy monitoring
-# Функция для развертывания мониторинга
+# Function to deploy monitoring
 deploy_monitoring() {
     print_status "$BLUE" "Deploying monitoring stack..."
     
@@ -84,7 +84,7 @@ deploy_monitoring() {
 }
 
 # Function to deploy CI/CD
-# Функция для развертывания CI/CD
+# Function to deploy CI/CD
 deploy_cicd() {
     print_status "$BLUE" "Deploying CI/CD components..."
     
@@ -96,7 +96,7 @@ deploy_cicd() {
 }
 
 # Function to deploy GitOps
-# Функция для развертывания GitOps
+# Function to deploy GitOps
 deploy_gitops() {
     print_status "$BLUE" "Deploying GitOps components..."
     
@@ -107,7 +107,7 @@ deploy_gitops() {
 }
 
 # Function to deploy artifacts
-# Функция для развертывания артефактов
+# Function to deploy artifacts
 deploy_artifacts() {
     print_status "$BLUE" "Deploying artifact management..."
     
@@ -118,7 +118,7 @@ deploy_artifacts() {
 }
 
 # Function to deploy lab applications
-# Функция для развертывания лабораторных приложений
+# Function to deploy lab applications
 deploy_lab_apps() {
     print_status "$BLUE" "Deploying lab applications..."
     
@@ -130,7 +130,7 @@ deploy_lab_apps() {
 }
 
 # Function to deploy security policies
-# Функция для развертывания политик безопасности
+# Function to deploy security policies
 deploy_security_policies() {
     print_status "$BLUE" "Deploying security policies..."
     
@@ -144,17 +144,17 @@ deploy_security_policies() {
 }
 
 # Function to label nodes
-# Функция для маркировки узлов
+# Function to label nodes
 label_nodes() {
     print_status "$BLUE" "Labeling nodes..."
     
     # This should be done manually or via Ansible
-    # Это должно быть сделано вручную или через Ansible
+    # This should be done manually or through Ansible
     print_status "$YELLOW" "⚠ Please label nodes manually using commands from src/kubernetes/nodes/node-labels.yaml"
 }
 
 # Function to wait for deployments
-# Функция для ожидания развертываний
+# Function to wait for deployments
 wait_for_deployments() {
     print_status "$BLUE" "Waiting for deployments to be ready..."
     
@@ -168,7 +168,7 @@ wait_for_deployments() {
 }
 
 # Function to show service URLs
-# Функция для показа URL сервисов
+# Function to show service URLs
 show_service_urls() {
     print_status "$BLUE" "Service URLs:"
     echo ""
@@ -183,20 +183,20 @@ show_service_urls() {
 }
 
 # Main deployment function
-# Основная функция развертывания
+# Main deployment function
 main() {
     print_status "$BLUE" "Starting complete deployment of Kubernetes Baremetal Lab..."
     print_status "$BLUE" "Начинаем полное развертывание Kubernetes Baremetal Lab..."
     
     # Check if kubectl is available
-    # Проверка доступности kubectl
+    # Check kubectl availability
     if ! command -v kubectl &> /dev/null; then
         print_status "$RED" "✗ kubectl is not installed or not in PATH"
         exit 1
     fi
     
     # Check cluster connectivity
-    # Проверка связности с кластером
+    # Check cluster connectivity
     if ! kubectl cluster-info &> /dev/null; then
         print_status "$RED" "✗ Cannot connect to Kubernetes cluster"
         exit 1
@@ -205,7 +205,7 @@ main() {
     print_status "$GREEN" "✓ Connected to Kubernetes cluster"
     
     # Deploy components in order
-    # Развертывание компонентов по порядку
+    # Deploy components in order
     
     # 1. Deploy namespaces
     deploy_namespace "all"
@@ -257,5 +257,5 @@ main() {
 }
 
 # Run main function
-# Запуск основной функции
+# Run main function
 main "$@" 

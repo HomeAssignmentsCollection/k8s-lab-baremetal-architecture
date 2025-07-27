@@ -1,5 +1,5 @@
 # Kubeadm Configuration Template
-# Шаблон конфигурации kubeadm
+# kubeadm configuration template
 
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration

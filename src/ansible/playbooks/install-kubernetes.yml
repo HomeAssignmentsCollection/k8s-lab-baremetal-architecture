@@ -1,6 +1,5 @@
 ---
 # Ansible playbook for installing Kubernetes
-# Ansible плейбук для установки Kubernetes
 
 - name: Install Kubernetes
   hosts: all
@@ -8,7 +7,6 @@
   gather_facts: true
   vars:
     # Kubernetes configuration variables
-    # Переменные конфигурации Kubernetes
     kubernetes_version: "{{ kubernetes_version | default('1.28.0') }}"
     container_runtime: "{{ container_runtime | default('containerd') }}"
     cni_plugin: "{{ cni_plugin | default('flannel') }}"
@@ -17,7 +15,6 @@
     cluster_name: "{{ cluster_name | default('baremetal-cluster') }}"
   tasks:
     # Install container runtime
-    # Установка container runtime
     - name: Install containerd
       include_tasks: tasks/install-containerd.yml
       when: container_runtime == "containerd"
@@ -25,7 +22,6 @@
       include_tasks: tasks/install-docker.yml
       when: container_runtime == "docker"
     # Install Kubernetes components
-    # Установка компонентов Kubernetes
     - name: Add Kubernetes GPG key (Debian/Ubuntu)
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
@@ -79,7 +75,6 @@
         enabled: yes
         daemon_reload: yes
     # Configure kubelet
-    # Настройка kubelet
     - name: Create kubelet configuration directory
       file:
         path: /etc/default
@@ -92,7 +87,6 @@
         mode: '0644'
       notify: restart kubelet
     # Install CNI plugins
-    # Установка CNI плагинов
     - name: Create CNI directories
       file:
         path: "{{ item }}"

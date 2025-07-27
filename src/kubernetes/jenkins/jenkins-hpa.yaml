@@ -1,6 +1,6 @@
 ---
 # Horizontal Pod Autoscaler for Jenkins
-# Горизонтальный автомасштабировщик подов для Jenkins
+# Horizontal Pod Autoscaler for Jenkins
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

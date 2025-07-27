@@ -1,13 +1,13 @@
 #!/bin/bash
-# Скрипт для массового автоформатирования YAML-файлов в проекте
-# Требует: yq (https://github.com/mikefarah/yq), sed
-# Usage: ./code-quality/autoformat-yaml.sh [директория]
+# Script for mass auto-formatting YAML files in the project
+# Requires: yq (https://github.com/mikefarah/yq), sed
+# Usage: ./code-quality/autoformat-yaml.sh [directory]
 
 set -euo pipefail
 
 TARGET_DIR="${1:-.}"
 
-# Цвета для вывода
+# Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -19,29 +19,29 @@ print_status() {
   echo -e "${color}${msg}${NC}"
 }
 
-# Проверка наличия yq
+# Check for yq availability
 if ! command -v yq &> /dev/null; then
-  print_status "$RED" "[ERROR] Требуется yq (https://github.com/mikefarah/yq)"
+  print_status "$RED" "[ERROR] yq required (https://github.com/mikefarah/yq)"
   exit 1
 fi
 
-# Поиск всех yaml/yml файлов
+# Find all yaml/yml files
 YAML_FILES=$(find "$TARGET_DIR" \( -name "*.yaml" -o -name "*.yml" \) -type f)
 
 for file in $YAML_FILES; do
-  print_status "$YELLOW" "Форматирую: $file"
-  # 1. Удалить trailing spaces
+  print_status "$YELLOW" "Formatting: $file"
+  # 1. Remove trailing spaces
   sed -i 's/[ \t]*$//' "$file"
-  # 2. Добавить новую строку в конец файла
+  # 2. Add newline at end of file
   echo "" >> "$file"
-  # 3. Добавить '---' в начало, если нет
+  # 3. Add '---' at beginning if not present
   first_line=$(head -n 1 "$file")
   if [[ "$first_line" != '---' ]]; then
     sed -i '1s/^/---\n/' "$file"
   fi
-  # 4. Применить yq для автоотступов (перезаписать файл)
+  # 4. Apply yq for auto-indentation (overwrite file)
   yq eval '.' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-  print_status "$GREEN" "✓ $file отформатирован"
+  print_status "$GREEN" "✓ $file formatted"
 done
 
 print_status "$GREEN" "\nМассовое автоформатирование YAML завершено!"

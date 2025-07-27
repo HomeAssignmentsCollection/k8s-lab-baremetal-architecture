@@ -1,5 +1,5 @@
 # Main Terraform configuration for Kubernetes Baremetal Lab
-# Основная конфигурация Terraform для Kubernetes Baremetal Lab
+# Main Terraform configuration for Kubernetes Baremetal Lab
 
 terraform {
   required_version = ">= 1.0"
@@ -16,25 +16,25 @@ terraform {
 }
 
 # Infrastructure configuration variables are defined in variables.tf
-# Переменные конфигурации инфраструктуры определены в variables.tf
+# Infrastructure configuration variables are defined in variables.tf
 
 # Data sources for existing infrastructure
-# Источники данных для существующей инфраструктуры
+# Data sources for existing infrastructure
 # data "external" "get_nodes" {
 #   program = ["bash", "${path.module}/scripts/get-nodes.sh"]
 # }
 
 # Local values for computed configurations
-# Локальные значения для вычисленных конфигураций
+# Local values for computed configurations
 locals {
   # Generate node configurations
-  # Генерация конфигураций узлов
+  # Generate node configurations
   control_plane_ips = var.control_plane_ips
   worker_ips        = var.worker_ips
   load_balancer_ip  = var.load_balancer_ip
 
   # Kubernetes configuration
-  # Конфигурация Kubernetes
+  # Kubernetes configuration
   kubernetes_config = {
     version      = var.kubernetes_version
     pod_cidr     = var.pod_cidr
@@ -43,7 +43,7 @@ locals {
   }
 
   # Network configuration
-  # Сетевая конфигурация
+  # Network configuration
   network_config = {
     cidr        = var.network_cidr
     gateway     = var.network_gateway
@@ -52,7 +52,7 @@ locals {
 }
 
 # Output values for other modules
-# Выходные значения для других модулей
+# Output values for other modules
 output "kubernetes_config" {
   description = "Kubernetes cluster configuration"
   value       = local.kubernetes_config
@@ -79,7 +79,7 @@ output "load_balancer_ip" {
 }
 
 # Generate inventory file for Ansible
-# Генерация файла инвентаря для Ansible
+# Generate inventory file for Ansible
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/inventory.tpl", {
     control_plane_ips = local.control_plane_ips,
@@ -91,7 +91,7 @@ resource "local_file" "ansible_inventory" {
 }
 
 # Generate Kubernetes configuration
-# Генерация конфигурации Kubernetes
+# Generate Kubernetes configuration
 resource "local_file" "kubernetes_config" {
   content = templatefile("${path.module}/templates/kubeadm-config.tpl", {
     kubernetes_version = var.kubernetes_version,

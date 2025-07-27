@@ -95,19 +95,19 @@ check_network() {
 }
 
 # Function to check storage
-# Функция для проверки хранилища
+# Function to check storage
 check_storage() {
     print_status "$BLUE" "Checking storage..."
     
     # Check if default storage class exists
-    # Проверка существования класса хранилища по умолчанию
+    # Check for default storage class existence
     if kubectl get storageclass &> /dev/null; then
         local storage_classes
         storage_classes=$(kubectl get storageclass --no-headers | wc -l)
         print_status "$GREEN" "✓ Found $storage_classes storage classes"
         
         # Check for default storage class
-        # Проверка класса хранилища по умолчанию
+        # Check default storage class
         if kubectl get storageclass | grep -q "default"; then
             print_status "$GREEN" "✓ Default storage class is configured"
         else
@@ -119,17 +119,17 @@ check_storage() {
 }
 
 # Function to check monitoring
-# Функция для проверки мониторинга
+# Function to check monitoring
 check_monitoring() {
     print_status "$BLUE" "Checking monitoring stack..."
     
     # Check if monitoring namespace exists
-    # Проверка существования namespace мониторинга
+    # Check for monitoring namespace existence
     if kubectl get namespace monitoring &> /dev/null; then
         print_status "$GREEN" "✓ Monitoring namespace exists"
         
         # Check monitoring pods
-        # Проверка подов мониторинга
+        # Check monitoring pods
         local monitoring_pods
         monitoring_pods=$(kubectl get pods -n monitoring --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$monitoring_pods" -gt 0 ]; then
@@ -143,17 +143,17 @@ check_monitoring() {
 }
 
 # Function to check logging
-# Функция для проверки логирования
+# Function to check logging
 check_logging() {
     print_status "$BLUE" "Checking logging stack..."
     
     # Check if logging namespace exists
-    # Проверка существования namespace логирования
+    # Check for logging namespace existence
     if kubectl get namespace logging &> /dev/null; then
         print_status "$GREEN" "✓ Logging namespace exists"
         
         # Check logging pods
-        # Проверка подов логирования
+        # Check logging pods
         local logging_pods
         logging_pods=$(kubectl get pods -n logging --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$logging_pods" -gt 0 ]; then
@@ -167,17 +167,17 @@ check_logging() {
 }
 
 # Function to check ingress
-# Функция для проверки ingress
+# Function to check ingress
 check_ingress() {
     print_status "$BLUE" "Checking ingress controller..."
     
     # Check if ingress-nginx namespace exists
-    # Проверка существования namespace ingress-nginx
+    # Check for ingress-nginx namespace existence
     if kubectl get namespace ingress-nginx &> /dev/null; then
         print_status "$GREEN" "✓ Ingress-nginx namespace exists"
         
         # Check ingress controller pods
-        # Проверка подов ingress контроллера
+        # Check ingress controller pods
         local ingress_pods
         ingress_pods=$(kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$ingress_pods" -gt 0 ]; then
@@ -191,12 +191,12 @@ check_ingress() {
 }
 
 # Function to run basic tests
-# Функция для запуска базовых тестов
+# Function to run basic tests
 run_basic_tests() {
     print_status "$BLUE" "Running basic functionality tests..."
     
     # Test namespace creation
-    # Тест создания namespace
+    # Test namespace creation
     local test_namespace
     test_namespace="verification-test-$(date +%s)"
     if kubectl create namespace "$test_namespace" &> /dev/null; then
@@ -207,7 +207,7 @@ run_basic_tests() {
     fi
     
     # Test pod creation
-    # Тест создания пода
+    # Test pod creation
     local test_pod
     test_pod="test-pod-$(date +%s)"
     if kubectl run "$test_pod" --image=nginx:alpine --restart=Never &> /dev/null; then
@@ -219,43 +219,43 @@ run_basic_tests() {
 }
 
 # Main verification function
-# Основная функция проверки
+# Main verification function
 main() {
     print_status "$BLUE" "Starting Kubernetes installation verification..."
     print_status "$BLUE" "Начинаем проверку установки Kubernetes..."
     
     # Check required tools
-    # Проверка необходимых инструментов
+    # Check required tools
     print_status "$BLUE" "Checking required tools..."
     check_command "kubectl"
     check_command "kubectl"
     
     # Check Kubernetes cluster
-    # Проверка кластера Kubernetes
+    # Check Kubernetes cluster
     check_kubernetes_cluster
     
     # Check network
-    # Проверка сети
+    # Check network
     check_network
     
     # Check storage
-    # Проверка хранилища
+    # Check storage
     check_storage
     
     # Check monitoring
-    # Проверка мониторинга
+    # Check monitoring
     check_monitoring
     
     # Check logging
-    # Проверка логирования
+    # Check logging
     check_logging
     
     # Check ingress
-    # Проверка ingress
+    # Check ingress
     check_ingress
     
     # Run basic tests
-    # Запуск базовых тестов
+    # Run basic tests
     run_basic_tests
     
     print_status "$GREEN" "Verification completed successfully!"
@@ -263,5 +263,5 @@ main() {
 }
 
 # Run main function
-# Запуск основной функции
+# Run main function
 main "$@" 

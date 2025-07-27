@@ -100,7 +100,7 @@ subjects:
   namespace: monitoring
 EOF
 
-    # Создание Role для лабораторных стендов
+    # Create Role for lab environments
     cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -133,11 +133,11 @@ EOF
     log_info "Дополнительные RBAC правила созданы успешно"
 }
 
-# Создание Security Context для подов
+# Create Security Context for pods
 create_security_contexts() {
     log_info "Создание Security Context для подов..."
     
-    # Обновление deployment'ов с security context
+    # Update deployments with security context
     cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -200,11 +200,11 @@ EOF
     log_info "Security Context созданы успешно"
 }
 
-# Создание Resource Quotas
+# Create Resource Quotas
 create_resource_quotas() {
     log_info "Создание Resource Quotas..."
     
-    # Resource Quota для lab-stands
+    # Resource Quota for lab-stands
     cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ResourceQuota
@@ -222,7 +222,7 @@ spec:
     persistentvolumeclaims: "10"
 EOF
 
-    # Resource Quota для monitoring
+    # Resource Quota for monitoring
     cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ResourceQuota
@@ -243,11 +243,11 @@ EOF
     log_info "Resource Quotas созданы успешно"
 }
 
-# Создание Limit Ranges
+# Create Limit Ranges
 create_limit_ranges() {
     log_info "Создание Limit Ranges..."
     
-    # Limit Range для lab-stands
+    # Limit Range for lab-stands
     cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: LimitRange
@@ -272,7 +272,7 @@ spec:
     type: Pod
 EOF
 
-    # Limit Range для monitoring
+    # Limit Range for monitoring
     cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: LimitRange
@@ -300,7 +300,7 @@ EOF
     log_info "Limit Ranges созданы успешно"
 }
 
-# Проверка статуса развертывания
+# Check deployment status
 check_deployment_status() {
     log_info "Проверка статуса развертывания безопасности..."
     
@@ -317,14 +317,14 @@ check_deployment_status() {
     kubectl get limitranges --all-namespaces
 }
 
-# Основная функция
+# Main function
 main() {
     log_info "Начало развертывания компонентов безопасности..."
     
     check_kubectl
     check_cluster
     
-    # Развертывание компонентов безопасности
+    # Deploy security components
     deploy_network_policies
     deploy_pod_security_policies
     create_additional_rbac
@@ -332,7 +332,7 @@ main() {
     create_resource_quotas
     create_limit_ranges
     
-    # Проверка статуса
+    # Check status
     check_deployment_status
     
     log_info "Развертывание компонентов безопасности завершено!"
@@ -345,8 +345,8 @@ main() {
     log_info "- Limit Ranges для установки лимитов"
 }
 
-# Обработка ошибок
+# Error handling
 trap 'log_error "Произошла ошибка. Выход..."; exit 1' ERR
 
-# Запуск основной функции
+# Run main function
 main "$@" 

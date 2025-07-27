@@ -1,6 +1,6 @@
 ---
 # Pod Security Policies for Kubernetes
-# Политики безопасности подов для кластера Kubernetes
+# Pod Security Policies for Kubernetes cluster
 
 # Restricted Policy - Most Secure
 apiVersion: policy/v1beta1

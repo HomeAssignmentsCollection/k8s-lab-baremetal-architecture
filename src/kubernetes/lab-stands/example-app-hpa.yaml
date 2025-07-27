@@ -1,6 +1,6 @@
 ---
 # Horizontal Pod Autoscaler for Example App
-# Горизонтальный автомасштабировщик подов для примера приложения
+# Horizontal Pod Autoscaler for example application
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

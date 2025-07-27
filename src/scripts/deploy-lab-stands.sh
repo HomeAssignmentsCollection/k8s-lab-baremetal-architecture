@@ -47,7 +47,7 @@ create_lab_stands_namespace() {
     kubectl create namespace lab-stands --dry-run=client -o yaml | kubectl apply -f -
 }
 
-# Развертывание Nginx примера
+# Deploy Nginx example
 deploy_nginx_example() {
     log_info "Развертывание Nginx примера..."
     

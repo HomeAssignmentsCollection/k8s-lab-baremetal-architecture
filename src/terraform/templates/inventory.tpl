@@ -1,5 +1,5 @@
 # Ansible Inventory Template
-# Шаблон инвентаря Ansible
+# Ansible inventory template
 
 [control_plane]
 %{ for ip in control_plane_ips ~}

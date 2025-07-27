@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Pre-commit hook for Kubernetes Baremetal Lab
-# Pre-commit хук для Kubernetes Baremetal Lab
+# Pre-commit hook for Kubernetes Baremetal Lab
 
 set -e
 

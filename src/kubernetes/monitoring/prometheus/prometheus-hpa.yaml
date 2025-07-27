@@ -1,6 +1,6 @@
 ---
 # Horizontal Pod Autoscaler for Prometheus
-# Горизонтальный автомасштабировщик подов для Prometheus
+# Horizontal Pod Autoscaler for Prometheus
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

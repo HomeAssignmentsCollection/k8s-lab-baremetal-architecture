@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script to generate secure secrets for Kubernetes
-# Скрипт для генерации безопасных секретов для Kubernetes
+# Script for generating secure secrets for Kubernetes
 
 set -euo pipefail
 
@@ -48,7 +48,7 @@ create_secrets_file() {
     # Create the secrets file
     cat > "$output_file" << EOF
 # Generated Secure Secrets for Kubernetes
-# Автоматически сгенерированные безопасные секреты для Kubernetes
+# Automatically generated secure secrets for Kubernetes
 # Generated on: $(date)
 
 # Jenkins Admin Secret
@@ -141,7 +141,7 @@ EOF
     local passwords_file="src/kubernetes/secrets_management/passwords.txt"
     cat > "$passwords_file" << EOF
 # Generated Passwords - KEEP THIS FILE SECURE!
-# Сгенерированные пароли - ХРАНИТЕ ЭТОТ ФАЙЛ В БЕЗОПАСНОСТИ!
+# Generated passwords - KEEP THIS FILE SECURE!
 # Generated on: $(date)
 
 Jenkins Admin Password: $JENKINS_PASSWORD

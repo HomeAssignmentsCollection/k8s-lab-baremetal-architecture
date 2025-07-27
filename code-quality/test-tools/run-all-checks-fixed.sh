@@ -1,6 +1,6 @@
 #!/bin/bash
 # Comprehensive Code Quality Check Script (Fixed Version)
-# Проверка качества кода с обходом известных проблем
+# Code quality check with workarounds for known issues
 
 set -euo pipefail
 

@@ -1,10 +1,10 @@
 # Code Quality Tools
 
-## Описание
+## Description
 
 В этом каталоге собраны инструменты и скрипты для обеспечения качества кода, линтинга, тестирования и автоматизации проверок для всех компонентов проекта.
 
-## Быстрая установка всех инструментов
+## Quick installation of all tools
 
 Для быстрой установки всех необходимых утилит используйте скрипт:
 
@@ -16,7 +16,7 @@ sudo ./code-quality/install-code-quality-tools.sh
 - Требует права sudo для глобальных утилит (npm, wget в /usr/local/bin).
 - После установки рекомендуется перезапустить терминал или выполнить `hash -r` для обновления PATH.
 
-## Установка недостающих инструментов вручную
+## Manual installation of missing tools
 
 Если хотите установить вручную, используйте инструкции ниже:
 
@@ -29,7 +29,7 @@ sudo ./code-quality/install-code-quality-tools.sh
   sudo apt install tflint
   ```
 
-### 2. ansible и ansible-lint
+### 2. ansible and ansible-lint
 - [Документация](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - Установка:
   ```bash
@@ -71,7 +71,7 @@ sudo ./code-quality/install-code-quality-tools.sh
   sudo apt install pre-commit
   ```
 
-## Быстрый старт
+## Quick start
 
 1. Установите все необходимые инструменты (см. выше).
 2. Проверьте pre-commit хуки:
@@ -90,7 +90,7 @@ sudo ./code-quality/install-code-quality-tools.sh
 - Для корректной работы yamllint создайте файл конфигурации: `code-quality/configs/.yamllint`.
 - Для tflint рекомендуется настроить правила под ваш стиль.
 
-## Ссылки
+## Links
 - [tflint](https://github.com/terraform-linters/tflint)
 - [ansible-lint](https://ansible-lint.readthedocs.io/)
 - [yamllint](https://yamllint.readthedocs.io/)

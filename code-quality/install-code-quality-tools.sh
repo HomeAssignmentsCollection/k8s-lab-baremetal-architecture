@@ -1,12 +1,12 @@
 #!/bin/bash
-# Скрипт для установки всех необходимых инструментов для проверки качества кода
-# Устанавливает: yamllint, yq, tflint, ansible, ansible-lint, markdownlint-cli, pre-commit
-# Запускать с правами sudo для глобальных утилит (npm, wget в /usr/local/bin)
+# Script to install all necessary tools for code quality checking
+# Installs: yamllint, yq, tflint, ansible, ansible-lint, markdownlint-cli, pre-commit
+# Run with sudo for global utilities (npm, wget in /usr/local/bin)
 # Usage: sudo ./code-quality/install-code-quality-tools.sh
 
 set -euo pipefail
 
-# Цвета для вывода
+# Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 # RED='\033[0;31m'  # Unused color variable
