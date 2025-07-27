@@ -4,12 +4,14 @@
 terraform {
   required_version = ">= 1.0"
   required_providers {
-    # Add your cloud provider here if using cloud resources
-    # Добавьте ваш облачный провайдер здесь, если используете облачные ресурсы
-    # aws = {
-    #   source  = "hashicorp/aws"
-    #   version = "~> 4.0"
-    # }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.3"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
+    }
   }
 }
 
@@ -18,9 +20,9 @@ terraform {
 
 # Data sources for existing infrastructure
 # Источники данных для существующей инфраструктуры
-data "external" "get_nodes" {
-  program = ["bash", "${path.module}/scripts/get-nodes.sh"]
-}
+# data "external" "get_nodes" {
+#   program = ["bash", "${path.module}/scripts/get-nodes.sh"]
+# }
 
 # Local values for computed configurations
 # Локальные значения для вычисленных конфигураций
@@ -30,21 +32,21 @@ locals {
   control_plane_ips = var.control_plane_ips
   worker_ips        = var.worker_ips
   load_balancer_ip  = var.load_balancer_ip
-  
+
   # Kubernetes configuration
   # Конфигурация Kubernetes
   kubernetes_config = {
-    version     = var.kubernetes_version
-    pod_cidr    = var.pod_cidr
+    version      = var.kubernetes_version
+    pod_cidr     = var.pod_cidr
     service_cidr = var.service_cidr
     network_cidr = var.network_cidr
   }
-  
+
   # Network configuration
   # Сетевая конфигурация
   network_config = {
-    cidr = var.network_cidr
-    gateway = var.network_gateway
+    cidr        = var.network_cidr
+    gateway     = var.network_gateway
     dns_servers = var.dns_servers
   }
 }
@@ -93,9 +95,9 @@ resource "local_file" "ansible_inventory" {
 resource "local_file" "kubernetes_config" {
   content = templatefile("${path.module}/templates/kubeadm-config.tpl", {
     kubernetes_version = var.kubernetes_version,
-    pod_cidr          = var.pod_cidr,
-    service_cidr      = var.service_cidr,
-    load_balancer_ip  = local.load_balancer_ip
+    pod_cidr           = var.pod_cidr,
+    service_cidr       = var.service_cidr,
+    load_balancer_ip   = local.load_balancer_ip
   })
   filename = "${path.module}/../kubernetes/config/kubeadm-config.yaml"
 } 

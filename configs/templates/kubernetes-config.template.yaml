@@ -1,3 +1,4 @@
+---
 # Kubernetes Configuration Template
 # Kubernetes configuration template
 
@@ -11,46 +12,37 @@ data:
   app.environment: "${ENVIRONMENT}"
   app.debug: "${DEBUG}"
   app.log_level: "${LOG_LEVEL}"
-  
   # Jenkins configuration
   jenkins.admin_user: "${JENKINS_ADMIN_USER}"
   jenkins.num_executors: "${JENKINS_NUM_EXECUTORS}"
   jenkins.jvm_opts: "${JENKINS_JVM_OPTS}"
-  
   # Grafana configuration
   grafana.admin_user: "${GRAFANA_ADMIN_USER}"
   grafana.allow_sign_up: "${GRAFANA_ALLOW_SIGN_UP}"
   grafana.allow_anonymous: "${GRAFANA_ALLOW_ANONYMOUS}"
-  
   # ArgoCD configuration
   argocd.admin_user: "${ARGOCD_ADMIN_USER}"
   argocd.repo_timeout: "${ARGOCD_REPO_TIMEOUT}"
   argocd.max_concurrent_reconciles: "${ARGOCD_MAX_CONCURRENT_RECONCILES}"
-  
   # Artifactory configuration
   artifactory.admin_user: "${ARTIFACTORY_ADMIN_USER}"
   artifactory.license_type: "${ARTIFACTORY_LICENSE_TYPE}"
-  
   # Monitoring configuration
   prometheus.retention_days: "${PROMETHEUS_RETENTION_DAYS}"
   prometheus.scrape_interval: "${PROMETHEUS_SCRAPE_INTERVAL}"
   grafana.default_dashboard: "${GRAFANA_DEFAULT_DASHBOARD}"
-  
   # Network configuration
   ingress.class: "${INGRESS_CLASS}"
   ingress.ssl_redirect: "${INGRESS_SSL_REDIRECT}"
   metallb.address_pool: "${METALLB_ADDRESS_POOL}"
-  
   # Storage configuration
   storage.default_class: "${STORAGE_DEFAULT_CLASS}"
   storage.backup_enabled: "${STORAGE_BACKUP_ENABLED}"
   storage.retention_days: "${STORAGE_RETENTION_DAYS}"
-  
   # Security configuration
   security.rbac_enabled: "${SECURITY_RBAC_ENABLED}"
   security.network_policies: "${SECURITY_NETWORK_POLICIES}"
   security.pod_security_policies: "${SECURITY_POD_SECURITY_POLICIES}"
-  
   # Resource limits
   resources.jenkins.memory: "${RESOURCES_JENKINS_MEMORY}"
   resources.jenkins.cpu: "${RESOURCES_JENKINS_CPU}"
@@ -59,4 +51,4 @@ data:
   resources.argocd.memory: "${RESOURCES_ARGOCD_MEMORY}"
   resources.argocd.cpu: "${RESOURCES_ARGOCD_CPU}"
   resources.artifactory.memory: "${RESOURCES_ARTIFACTORY_MEMORY}"
-  resources.artifactory.cpu: "${RESOURCES_ARTIFACTORY_CPU}" 
+  resources.artifactory.cpu: "${RESOURCES_ARTIFACTORY_CPU}"

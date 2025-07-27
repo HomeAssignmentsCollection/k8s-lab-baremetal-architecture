@@ -1,3 +1,4 @@
+---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -24,10 +25,10 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 allowedTopologies:
-- matchLabelExpressions:
-  - key: storage-type
-    values:
-    - ssd
+  - matchLabelExpressions:
+      - key: storage-type
+        values:
+          - ssd
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -36,10 +37,10 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 allowedTopologies:
-- matchLabelExpressions:
-  - key: storage-type
-    values:
-    - hdd
+  - matchLabelExpressions:
+      - key: storage-type
+        values:
+          - hdd
 ---
 # Example PersistentVolume for local storage
 apiVersion: v1
@@ -50,7 +51,7 @@ spec:
   capacity:
     storage: 100Gi
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
@@ -58,11 +59,11 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - k8s-worker-big-01
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-worker-big-01
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -72,7 +73,7 @@ spec:
   capacity:
     storage: 100Gi
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
@@ -80,11 +81,11 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - k8s-worker-big-02
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-worker-big-02
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -94,7 +95,7 @@ spec:
   capacity:
     storage: 100Gi
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
@@ -102,8 +103,8 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - k8s-worker-big-03 
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-worker-big-03

@@ -238,7 +238,7 @@ main() {
     
     # Verify installation if requested
     if [ "$verify_install" = true ]; then
-        verify_cni $cni_type
+        verify_cni "$cni_type"
     fi
     
     log_info "CNI deployment completed successfully!"

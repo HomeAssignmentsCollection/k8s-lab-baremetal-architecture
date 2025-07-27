@@ -1,3 +1,4 @@
+---
 # Node labeling configuration for different node types
 
 # Example commands to label nodes (run manually or via Ansible)
@@ -55,4 +56,4 @@
 # - key: "dedicated"
 #   operator: "Equal"
 #   value: "jenkins"
-#   effect: "NoSchedule" 
+#   effect: "NoSchedule"

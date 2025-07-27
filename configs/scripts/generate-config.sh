@@ -56,7 +56,7 @@ validate_environment() {
 # Function to generate random password
 generate_password() {
     local length=${1:-16}
-    openssl rand -base64 $length | tr -d "=+/" | cut -c1-$length
+    openssl rand -base64 "$length" | tr -d "=+/" | cut -c1-"$length"
 }
 
 # Function to generate base64 encoded value

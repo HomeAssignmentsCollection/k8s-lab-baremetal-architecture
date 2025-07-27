@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -189,4 +190,4 @@ data:
           severity: critical
         annotations:
           summary: "Node {{ $labels.instance }} is down"
-          description: "Node has been down for more than 1 minute" 
+          description: "Node has been down for more than 1 minute"

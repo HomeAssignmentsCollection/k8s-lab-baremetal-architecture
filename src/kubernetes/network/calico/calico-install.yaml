@@ -1,3 +1,4 @@
+---
 # Calico CNI Installation Configuration
 
 # Install the Tigera Calico operator and custom resource definitions
@@ -35,31 +36,31 @@ spec:
     spec:
       serviceAccountName: calico-operator
       containers:
-      - name: calico-operator
-        image: quay.io/tigera/operator:v1.28.0
-        env:
-        - name: WATCH_NAMESPACE
-          value: ""
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: OPERATOR_NAME
-          value: "calico-operator"
-        - name: ENABLE_MULTI_CLUSTER_MANAGEMENT
-          value: "false"
-        resources:
-          requests:
-            memory: 150Mi
-            cpu: 100m
-          limits:
-            memory: 300Mi
-            cpu: 500m
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 1001
+        - name: calico-operator
+          image: quay.io/tigera/operator:v1.28.0
+          env:
+            - name: WATCH_NAMESPACE
+              value: ""
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "calico-operator"
+            - name: ENABLE_MULTI_CLUSTER_MANAGEMENT
+              value: "false"
+          resources:
+            requests:
+              memory: 150Mi
+              cpu: 100m
+            limits:
+              memory: 300Mi
+              cpu: 500m
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -72,27 +73,27 @@ kind: ClusterRole
 metadata:
   name: calico-operator
 rules:
-- apiGroups: [""]
-  resources: ["pods", "services", "endpoints", "persistentvolumeclaims", "events", "configmaps", "secrets"]
-  verbs: ["*"]
-- apiGroups: ["apps"]
-  resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
-  verbs: ["*"]
-- apiGroups: ["extensions"]
-  resources: ["replicasets", "daemonsets"]
-  verbs: ["*"]
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
-  verbs: ["*"]
-- apiGroups: ["apiextensions.k8s.io"]
-  resources: ["customresourcedefinitions"]
-  verbs: ["*"]
-- apiGroups: ["crd.projectcalico.org"]
-  resources: ["*"]
-  verbs: ["*"]
-- apiGroups: ["operator.tigera.io"]
-  resources: ["*"]
-  verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints", "persistentvolumeclaims", "events", "configmaps", "secrets"]
+    verbs: ["*"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
+    verbs: ["*"]
+  - apiGroups: ["extensions"]
+    resources: ["replicasets", "daemonsets"]
+    verbs: ["*"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
+    verbs: ["*"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["*"]
+  - apiGroups: ["crd.projectcalico.org"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["operator.tigera.io"]
+    resources: ["*"]
+    verbs: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -103,9 +104,9 @@ roleRef:
   kind: ClusterRole
   name: calico-operator
 subjects:
-- kind: ServiceAccount
-  name: calico-operator
-  namespace: calico-system
+  - kind: ServiceAccount
+    name: calico-operator
+    namespace: calico-system
 ---
 # Calico Installation
 apiVersion: operator.tigera.io/v1
@@ -117,38 +118,36 @@ spec:
   cni:
     type: Calico
     ipPools:
+      - blockSize: 26
+        cidr: 10.244.0.0/16
+        encapsulation: VXLANCrossSubnet
+        natOutgoing: Enabled
+        nodeSelector: all()
+  # The default IP pool to use for workload IPs.
+  ipPools:
     - blockSize: 26
       cidr: 10.244.0.0/16
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
-  
-  # The default IP pool to use for workload IPs.
-  ipPools:
-  - blockSize: 26
-    cidr: 10.244.0.0/16
-    encapsulation: VXLANCrossSubnet
-    natOutgoing: Enabled
-    nodeSelector: all()
-  
   # Component resources
   componentResources:
-  - componentName: Node
-    resourceRequirements:
-      requests:
-        memory: 250Mi
-        cpu: 250m
-      limits:
-        memory: 500Mi
-        cpu: 500m
-  - componentName: Typha
-    resourceRequirements:
-      requests:
-        memory: 64Mi
-        cpu: 100m
-      limits:
-        memory: 500Mi
-        cpu: 1000m
+    - componentName: Node
+      resourceRequirements:
+        requests:
+          memory: 250Mi
+          cpu: 250m
+        limits:
+          memory: 500Mi
+          cpu: 500m
+    - componentName: Typha
+      resourceRequirements:
+        requests:
+          memory: 64Mi
+          cpu: 100m
+        limits:
+          memory: 500Mi
+          cpu: 1000m
 ---
 # Enable prometheus metrics
 apiVersion: operator.tigera.io/v1
@@ -185,11 +184,11 @@ metadata:
 spec:
   selector: has(node-role.kubernetes.io/control-plane)
   ingress:
-  - action: Allow
-    source:
-      selector: has(node-role.kubernetes.io/control-plane)
+    - action: Allow
+      source:
+        selector: has(node-role.kubernetes.io/control-plane)
   egress:
-  - action: Allow
+    - action: Allow
 ---
 apiVersion: crd.projectcalico.org/v1
 kind: GlobalNetworkPolicy
@@ -198,8 +197,8 @@ metadata:
 spec:
   selector: !has(node-role.kubernetes.io/control-plane)
   ingress:
-  - action: Allow
-    source:
-      selector: !has(node-role.kubernetes.io/control-plane)
+    - action: Allow
+      source:
+        selector: !has(node-role.kubernetes.io/control-plane)
   egress:
-  - action: Allow 
+    - action: Allow

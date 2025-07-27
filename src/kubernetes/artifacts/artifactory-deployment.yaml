@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,51 +19,51 @@ spec:
       nodeSelector:
         node-type: big
       containers:
-      - name: artifactory
-        image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.68.0
-        ports:
-        - containerPort: 8081
-          name: http
-        - containerPort: 8082
-          name: https
-        env:
-        - name: ARTIFACTORY_HOME
-          value: "/var/opt/jfrog/artifactory"
-        - name: ARTIFACTORY_USER
-          value: "admin"
-        - name: ARTIFACTORY_PASSWORD
-          value: "password"
-        volumeMounts:
-        - name: artifactory-data
-          mountPath: /var/opt/jfrog/artifactory
-        - name: artifactory-logs
-          mountPath: /var/opt/jfrog/artifactory/logs
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "500m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /artifactory/api/system/ping
-            port: 8081
-          initialDelaySeconds: 60
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /artifactory/api/system/ping
-            port: 8081
-          initialDelaySeconds: 60
-          periodSeconds: 30
+        - name: artifactory
+          image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.68.0
+          ports:
+            - containerPort: 8081
+              name: http
+            - containerPort: 8082
+              name: https
+          env:
+            - name: ARTIFACTORY_HOME
+              value: "/var/opt/jfrog/artifactory"
+            - name: ARTIFACTORY_USER
+              value: "admin"
+            - name: ARTIFACTORY_PASSWORD
+              value: "password"
+          volumeMounts:
+            - name: artifactory-data
+              mountPath: /var/opt/jfrog/artifactory
+            - name: artifactory-logs
+              mountPath: /var/opt/jfrog/artifactory/logs
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /artifactory/api/system/ping
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /artifactory/api/system/ping
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 30
       volumes:
-      - name: artifactory-data
-        persistentVolumeClaim:
-          claimName: artifactory-data-pvc
-      - name: artifactory-logs
-        persistentVolumeClaim:
-          claimName: artifactory-logs-pvc
+        - name: artifactory-data
+          persistentVolumeClaim:
+            claimName: artifactory-data-pvc
+        - name: artifactory-logs
+          persistentVolumeClaim:
+            claimName: artifactory-logs-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -74,14 +75,14 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    targetPort: 8081
-    protocol: TCP
-    name: http
-  - port: 443
-    targetPort: 8082
-    protocol: TCP
-    name: https
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 8082
+      protocol: TCP
+      name: https
   selector:
     app: artifactory
 ---
@@ -109,4 +110,4 @@ spec:
   storageClassName: local-storage
   resources:
     requests:
-      storage: 20Gi 
+      storage: 20Gi

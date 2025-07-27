@@ -47,8 +47,10 @@ check_cluster_connectivity() {
 check_nodes() {
     print_status "$BLUE" "Checking cluster nodes..."
     
-    local nodes=$(kubectl get nodes --no-headers 2>/dev/null | wc -l)
-    local ready_nodes=$(kubectl get nodes --no-headers 2>/dev/null | grep -c "Ready" || echo "0")
+    local nodes
+    local ready_nodes
+    nodes=$(kubectl get nodes --no-headers 2>/dev/null | wc -l)
+    ready_nodes=$(kubectl get nodes --no-headers 2>/dev/null | grep -c "Ready" || echo "0")
     
     if [ "$nodes" -gt 0 ]; then
         print_status "$GREEN" "✓ Found $nodes nodes, $ready_nodes are ready"
@@ -69,8 +71,10 @@ check_nodes() {
 check_system_pods() {
     print_status "$BLUE" "Checking system pods..."
     
-    local system_pods=$(kubectl get pods -n kube-system --no-headers 2>/dev/null | wc -l || echo "0")
-    local running_pods=$(kubectl get pods -n kube-system --no-headers 2>/dev/null | grep -c "Running" || echo "0")
+    local system_pods
+    local running_pods
+    system_pods=$(kubectl get pods -n kube-system --no-headers 2>/dev/null | wc -l || echo "0")
+    running_pods=$(kubectl get pods -n kube-system --no-headers 2>/dev/null | grep -c "Running" || echo "0")
     
     if [ "$system_pods" -gt 0 ]; then
         print_status "$GREEN" "✓ Found $system_pods system pods, $running_pods are running"
@@ -95,8 +99,10 @@ check_application_pods() {
     
     for ns in "${namespaces[@]}"; do
         if kubectl get namespace "$ns" &> /dev/null; then
-            local pods=$(kubectl get pods -n "$ns" --no-headers 2>/dev/null | wc -l || echo "0")
-            local running_pods=$(kubectl get pods -n "$ns" --no-headers 2>/dev/null | grep -c "Running" || echo "0")
+            local pods
+            local running_pods
+            pods=$(kubectl get pods -n "$ns" --no-headers 2>/dev/null | wc -l || echo "0")
+            running_pods=$(kubectl get pods -n "$ns" --no-headers 2>/dev/null | grep -c "Running" || echo "0")
             
             if [ "$pods" -gt 0 ]; then
                 print_status "$GREEN" "✓ $ns: $pods pods, $running_pods running"
@@ -113,8 +119,10 @@ check_application_pods() {
 check_services() {
     print_status "$BLUE" "Checking services..."
     
-    local loadbalancer_services=$(kubectl get svc --all-namespaces --no-headers 2>/dev/null | grep -c "LoadBalancer" || echo "0")
-    local clusterip_services=$(kubectl get svc --all-namespaces --no-headers 2>/dev/null | grep -c "ClusterIP" || echo "0")
+    local loadbalancer_services
+    local clusterip_services
+    loadbalancer_services=$(kubectl get svc --all-namespaces --no-headers 2>/dev/null | grep -c "LoadBalancer" || echo "0")
+    clusterip_services=$(kubectl get svc --all-namespaces --no-headers 2>/dev/null | grep -c "ClusterIP" || echo "0")
     
     print_status "$GREEN" "✓ Found $loadbalancer_services LoadBalancer services"
     print_status "$GREEN" "✓ Found $clusterip_services ClusterIP services"
@@ -125,7 +133,8 @@ check_storage() {
     print_status "$BLUE" "Checking storage..."
     
     if kubectl get storageclass &> /dev/null; then
-        local storage_classes=$(kubectl get storageclass --no-headers | wc -l)
+        local storage_classes
+        storage_classes=$(kubectl get storageclass --no-headers | wc -l)
         print_status "$GREEN" "✓ Found $storage_classes storage classes"
         
         # Check for default storage class
@@ -139,7 +148,8 @@ check_storage() {
     fi
     
     # Check persistent volumes
-    local pvs=$(kubectl get pv --no-headers 2>/dev/null | wc -l || echo "0")
+    local pvs
+    pvs=$(kubectl get pv --no-headers 2>/dev/null | wc -l || echo "0")
     print_status "$GREEN" "✓ Found $pvs persistent volumes"
 }
 
@@ -147,7 +157,8 @@ check_storage() {
 check_network_policies() {
     print_status "$BLUE" "Checking network policies..."
     
-    local network_policies=$(kubectl get networkpolicies --all-namespaces --no-headers 2>/dev/null | wc -l || echo "0")
+    local network_policies
+    network_policies=$(kubectl get networkpolicies --all-namespaces --no-headers 2>/dev/null | wc -l || echo "0")
     print_status "$GREEN" "✓ Found $network_policies network policies"
 }
 
@@ -166,7 +177,8 @@ check_resource_usage() {
 check_events() {
     print_status "$BLUE" "Checking recent events..."
     
-    local recent_events=$(kubectl get events --sort-by='.lastTimestamp' --no-headers 2>/dev/null | tail -10 || echo "")
+    local recent_events
+    recent_events=$(kubectl get events --sort-by='.lastTimestamp' --no-headers 2>/dev/null | tail -10 || echo "")
     
     if [ -n "$recent_events" ]; then
         print_status "$YELLOW" "Recent events:"
@@ -181,7 +193,8 @@ check_logs() {
     print_status "$BLUE" "Checking for error logs..."
     
     # Check kube-system logs for errors
-    local error_logs=$(kubectl logs -n kube-system --all-containers --tail=50 2>/dev/null | grep -i "error\|fail\|exception" | head -5 || echo "")
+    local error_logs
+    error_logs=$(kubectl logs -n kube-system --all-containers --tail=50 2>/dev/null | grep -i "error\|fail\|exception" | head -5 || echo "")
     
     if [ -n "$error_logs" ]; then
         print_status "$YELLOW" "Found error logs:"
@@ -195,7 +208,8 @@ check_logs() {
 generate_health_report() {
     print_status "$BLUE" "Generating health report..."
     
-    local report_file="cluster-health-report-$(date +%Y%m%d-%H%M%S).txt"
+    local report_file
+    report_file="cluster-health-report-$(date +%Y%m%d-%H%M%S).txt"
     
     {
         echo "Kubernetes Cluster Health Report"

@@ -1,151 +1,150 @@
+---
 # Hadolint Configuration
 # This file configures hadolint rules for Dockerfile linting
 
 # Rules to disable (skip)
 disable:
   # Style rules
-  - DL3000  # Use absolute WORKDIR
-  - DL3001  # For some minification, it is OK to copy everything and build
-  - DL3002  # Last user should not be root
-  - DL3003  # Use WORKDIR to switch to a directory
-  - DL3004  # Do not use sudo as it leads to predictable behavior
-  - DL3005  # Do not use apt-get upgrade (or apt upgrade)
-  - DL3006  # Always tag the version of an image explicitly
-  - DL3007  # Using latest is prone to errors if the image will ever update
-  - DL3008  # Pin versions in apt get install
-  - DL3009  # Delete the apt-get lists after installing something
-  - DL3010  # Use ADD for extracting archives into an image
-  - DL3011  # Valid UNIX ports range from 0 to 65535
-  - DL3012  # Provide an email address or URL as maintainer
-  - DL3013  # Pin versions in pip
-  - DL3014  # Use the -y flag to avoid manual input
-  - DL3015  # Avoid additional packages by specifying --no-install-recommends
-  - DL3016  # Pin versions in apk add
-  - DL3017  # Do not use apk upgrade
-  - DL3018  # Pin versions in gem install
-  - DL3019  # Use the --no-cache flag to avoid the need to use --update and remove /var/cache/apk/* when done installing packages
-  - DL3020  # Use COPY instead of ADD for files and folders
-  - DL3021  # COPY with more than 2 arguments requires the last argument to end with /
-  - DL3022  # COPY --from should reference a previously defined FROM alias
-  - DL3023  # COPY --from cannot reference its own FROM alias
-  - DL3024  # FROM aliases (stage names) must be lowercase
-  - DL3025  # Use arguments JSON notation for CMD and ENTRYPOINT arguments
-  - DL3026  # Use only an allowed registry in the FROM image
-  - DL3027  # Do not use apt as it is meant to be a end-user tool, use apt-get or apt-cache instead
-  - DL3028  # Pin versions in conda install
-  - DL3029  # Do not use --platform flag with FROM
-  - DL3030  # Use the -y flag to avoid manual input in yum install
-  - DL3031  # Do not use yum upgrade
-  - DL3032  # Allow yum to update the package index
-  - DL3033  # Specify version with tdnf install -y <package>
-  - DL3034  # Do not use tdnf upgrade
-  - DL3035  # Do not use yum
-  - DL3036  # yum is the primary package manager for older versions of RHEL/CentOS
-  - DL3037  # Specify version with zypper install -y <package>
-  - DL3038  # Do not use zypper upgrade
-  - DL3039  # Do not use zypper
-  - DL3040  # Do not use dnf
-  - DL3041  # Specify version with dnf install -y <package>
-  - DL3042  # Avoid cache mount miss
-  - DL3043  # Do not use wget
-  - DL3044  # Do not use curl
-  - DL3045  # Clear cache after apk add
-  - DL3046  # Clear cache after yum install
-  - DL3047  # Clear cache after dnf install
-  - DL3048  # Clear cache after zypper install
-  - DL3049  # Clear cache after tdnf install
-  - DL3050  # Do not use pip install --user
-  - DL3051  # Do not use pip install --target
-  - DL3052  # Do not use pip install --editable
-  - DL3053  # Do not use pip install --constraint
-  - DL3054  # Do not use pip install --requirement
-  - DL3055  # Do not use pip install --no-deps
-  - DL3056  # Do not use pip install --force-reinstall
-  - DL3057  # Do not use pip install --no-binary
-  - DL3058  # Do not use pip install --only-binary
-  - DL3059  # Multiple consecutive RUN instructions
-  - DL3060  # yarn cache clean missing after yarn install was run
-  - DL3061  # Invalid instruction cache mount
-  - DL4000  # MAINTAINER is deprecated
-  - DL4001  # Either use Wget or Curl but not both
-  - DL4003  # Multiple CMD instructions found
-  - DL4004  # Multiple ENTRYPOINT instructions found
-  - DL4005  # Use SHELL to change the default shell
-  - DL4006  # Set the SHELL option -o pipefail before RUN with a pipe in
-  - DL4007  # Set the SHELL option -o errexit before RUN with a pipe in
-
+  - DL3000 # Use absolute WORKDIR
+  - DL3001 # For some minification, it is OK to copy everything and build
+  - DL3002 # Last user should not be root
+  - DL3003 # Use WORKDIR to switch to a directory
+  - DL3004 # Do not use sudo as it leads to predictable behavior
+  - DL3005 # Do not use apt-get upgrade (or apt upgrade)
+  - DL3006 # Always tag the version of an image explicitly
+  - DL3007 # Using latest is prone to errors if the image will ever update
+  - DL3008 # Pin versions in apt get install
+  - DL3009 # Delete the apt-get lists after installing something
+  - DL3010 # Use ADD for extracting archives into an image
+  - DL3011 # Valid UNIX ports range from 0 to 65535
+  - DL3012 # Provide an email address or URL as maintainer
+  - DL3013 # Pin versions in pip
+  - DL3014 # Use the -y flag to avoid manual input
+  - DL3015 # Avoid additional packages by specifying --no-install-recommends
+  - DL3016 # Pin versions in apk add
+  - DL3017 # Do not use apk upgrade
+  - DL3018 # Pin versions in gem install
+  - DL3019 # Use the --no-cache flag to avoid the need to use --update and remove /var/cache/apk/* when done installing packages
+  - DL3020 # Use COPY instead of ADD for files and folders
+  - DL3021 # COPY with more than 2 arguments requires the last argument to end with /
+  - DL3022 # COPY --from should reference a previously defined FROM alias
+  - DL3023 # COPY --from cannot reference its own FROM alias
+  - DL3024 # FROM aliases (stage names) must be lowercase
+  - DL3025 # Use arguments JSON notation for CMD and ENTRYPOINT arguments
+  - DL3026 # Use only an allowed registry in the FROM image
+  - DL3027 # Do not use apt as it is meant to be a end-user tool, use apt-get or apt-cache instead
+  - DL3028 # Pin versions in conda install
+  - DL3029 # Do not use --platform flag with FROM
+  - DL3030 # Use the -y flag to avoid manual input in yum install
+  - DL3031 # Do not use yum upgrade
+  - DL3032 # Allow yum to update the package index
+  - DL3033 # Specify version with tdnf install -y <package>
+  - DL3034 # Do not use tdnf upgrade
+  - DL3035 # Do not use yum
+  - DL3036 # yum is the primary package manager for older versions of RHEL/CentOS
+  - DL3037 # Specify version with zypper install -y <package>
+  - DL3038 # Do not use zypper upgrade
+  - DL3039 # Do not use zypper
+  - DL3040 # Do not use dnf
+  - DL3041 # Specify version with dnf install -y <package>
+  - DL3042 # Avoid cache mount miss
+  - DL3043 # Do not use wget
+  - DL3044 # Do not use curl
+  - DL3045 # Clear cache after apk add
+  - DL3046 # Clear cache after yum install
+  - DL3047 # Clear cache after dnf install
+  - DL3048 # Clear cache after zypper install
+  - DL3049 # Clear cache after tdnf install
+  - DL3050 # Do not use pip install --user
+  - DL3051 # Do not use pip install --target
+  - DL3052 # Do not use pip install --editable
+  - DL3053 # Do not use pip install --constraint
+  - DL3054 # Do not use pip install --requirement
+  - DL3055 # Do not use pip install --no-deps
+  - DL3056 # Do not use pip install --force-reinstall
+  - DL3057 # Do not use pip install --no-binary
+  - DL3058 # Do not use pip install --only-binary
+  - DL3059 # Multiple consecutive RUN instructions
+  - DL3060 # yarn cache clean missing after yarn install was run
+  - DL3061 # Invalid instruction cache mount
+  - DL4000 # MAINTAINER is deprecated
+  - DL4001 # Either use Wget or Curl but not both
+  - DL4003 # Multiple CMD instructions found
+  - DL4004 # Multiple ENTRYPOINT instructions found
+  - DL4005 # Use SHELL to change the default shell
+  - DL4006 # Set the SHELL option -o pipefail before RUN with a pipe in
+  - DL4007 # Set the SHELL option -o errexit before RUN with a pipe in
 # Rules to warn about (don't fail)
 warn:
-  - DL3000  # Use absolute WORKDIR
-  - DL3001  # For some minification, it is OK to copy everything and build
-  - DL3002  # Last user should not be root
-  - DL3003  # Use WORKDIR to switch to a directory
-  - DL3004  # Do not use sudo as it leads to predictable behavior
-  - DL3005  # Do not use apt-get upgrade (or apt upgrade)
-  - DL3006  # Always tag the version of an image explicitly
-  - DL3007  # Using latest is prone to errors if the image will ever update
-  - DL3008  # Pin versions in apt get install
-  - DL3009  # Delete the apt-get lists after installing something
-  - DL3010  # Use ADD for extracting archives into an image
-  - DL3011  # Valid UNIX ports range from 0 to 65535
-  - DL3012  # Provide an email address or URL as maintainer
-  - DL3013  # Pin versions in pip
-  - DL3014  # Use the -y flag to avoid manual input
-  - DL3015  # Avoid additional packages by specifying --no-install-recommends
-  - DL3016  # Pin versions in apk add
-  - DL3017  # Do not use apk upgrade
-  - DL3018  # Pin versions in gem install
-  - DL3019  # Use the --no-cache flag to avoid the need to use --update and remove /var/cache/apk/* when done installing packages
-  - DL3020  # Use COPY instead of ADD for files and folders
-  - DL3021  # COPY with more than 2 arguments requires the last argument to end with /
-  - DL3022  # COPY --from should reference a previously defined FROM alias
-  - DL3023  # COPY --from cannot reference its own FROM alias
-  - DL3024  # FROM aliases (stage names) must be lowercase
-  - DL3025  # Use arguments JSON notation for CMD and ENTRYPOINT arguments
-  - DL3026  # Use only an allowed registry in the FROM image
-  - DL3027  # Do not use apt as it is meant to be a end-user tool, use apt-get or apt-cache instead
-  - DL3028  # Pin versions in conda install
-  - DL3029  # Do not use --platform flag with FROM
-  - DL3030  # Use the -y flag to avoid manual input in yum install
-  - DL3031  # Do not use yum upgrade
-  - DL3032  # Allow yum to update the package index
-  - DL3033  # Specify version with tdnf install -y <package>
-  - DL3034  # Do not use tdnf upgrade
-  - DL3035  # Do not use yum
-  - DL3036  # yum is the primary package manager for older versions of RHEL/CentOS
-  - DL3037  # Specify version with zypper install -y <package>
-  - DL3038  # Do not use zypper upgrade
-  - DL3039  # Do not use zypper
-  - DL3040  # Do not use dnf
-  - DL3041  # Specify version with dnf install -y <package>
-  - DL3042  # Avoid cache mount miss
-  - DL3043  # Do not use wget
-  - DL3044  # Do not use curl
-  - DL3045  # Clear cache after apk add
-  - DL3046  # Clear cache after yum install
-  - DL3047  # Clear cache after dnf install
-  - DL3048  # Clear cache after zypper install
-  - DL3049  # Clear cache after tdnf install
-  - DL3050  # Do not use pip install --user
-  - DL3051  # Do not use pip install --target
-  - DL3052  # Do not use pip install --editable
-  - DL3053  # Do not use pip install --constraint
-  - DL3054  # Do not use pip install --requirement
-  - DL3055  # Do not use pip install --no-deps
-  - DL3056  # Do not use pip install --force-reinstall
-  - DL3057  # Do not use pip install --no-binary
-  - DL3058  # Do not use pip install --only-binary
-  - DL3059  # Multiple consecutive RUN instructions
-  - DL3060  # yarn cache clean missing after yarn install was run
-  - DL3061  # Invalid instruction cache mount
-  - DL4000  # MAINTAINER is deprecated
-  - DL4001  # Either use Wget or Curl but not both
-  - DL4003  # Multiple CMD instructions found
-  - DL4004  # Multiple ENTRYPOINT instructions found
-  - DL4005  # Use SHELL to change the default shell
-  - DL4006  # Set the SHELL option -o pipefail before RUN with a pipe in
-  - DL4007  # Set the SHELL option -o errexit before RUN with a pipe in
-
+  - DL3000 # Use absolute WORKDIR
+  - DL3001 # For some minification, it is OK to copy everything and build
+  - DL3002 # Last user should not be root
+  - DL3003 # Use WORKDIR to switch to a directory
+  - DL3004 # Do not use sudo as it leads to predictable behavior
+  - DL3005 # Do not use apt-get upgrade (or apt upgrade)
+  - DL3006 # Always tag the version of an image explicitly
+  - DL3007 # Using latest is prone to errors if the image will ever update
+  - DL3008 # Pin versions in apt get install
+  - DL3009 # Delete the apt-get lists after installing something
+  - DL3010 # Use ADD for extracting archives into an image
+  - DL3011 # Valid UNIX ports range from 0 to 65535
+  - DL3012 # Provide an email address or URL as maintainer
+  - DL3013 # Pin versions in pip
+  - DL3014 # Use the -y flag to avoid manual input
+  - DL3015 # Avoid additional packages by specifying --no-install-recommends
+  - DL3016 # Pin versions in apk add
+  - DL3017 # Do not use apk upgrade
+  - DL3018 # Pin versions in gem install
+  - DL3019 # Use the --no-cache flag to avoid the need to use --update and remove /var/cache/apk/* when done installing packages
+  - DL3020 # Use COPY instead of ADD for files and folders
+  - DL3021 # COPY with more than 2 arguments requires the last argument to end with /
+  - DL3022 # COPY --from should reference a previously defined FROM alias
+  - DL3023 # COPY --from cannot reference its own FROM alias
+  - DL3024 # FROM aliases (stage names) must be lowercase
+  - DL3025 # Use arguments JSON notation for CMD and ENTRYPOINT arguments
+  - DL3026 # Use only an allowed registry in the FROM image
+  - DL3027 # Do not use apt as it is meant to be a end-user tool, use apt-get or apt-cache instead
+  - DL3028 # Pin versions in conda install
+  - DL3029 # Do not use --platform flag with FROM
+  - DL3030 # Use the -y flag to avoid manual input in yum install
+  - DL3031 # Do not use yum upgrade
+  - DL3032 # Allow yum to update the package index
+  - DL3033 # Specify version with tdnf install -y <package>
+  - DL3034 # Do not use tdnf upgrade
+  - DL3035 # Do not use yum
+  - DL3036 # yum is the primary package manager for older versions of RHEL/CentOS
+  - DL3037 # Specify version with zypper install -y <package>
+  - DL3038 # Do not use zypper upgrade
+  - DL3039 # Do not use zypper
+  - DL3040 # Do not use dnf
+  - DL3041 # Specify version with dnf install -y <package>
+  - DL3042 # Avoid cache mount miss
+  - DL3043 # Do not use wget
+  - DL3044 # Do not use curl
+  - DL3045 # Clear cache after apk add
+  - DL3046 # Clear cache after yum install
+  - DL3047 # Clear cache after dnf install
+  - DL3048 # Clear cache after zypper install
+  - DL3049 # Clear cache after tdnf install
+  - DL3050 # Do not use pip install --user
+  - DL3051 # Do not use pip install --target
+  - DL3052 # Do not use pip install --editable
+  - DL3053 # Do not use pip install --constraint
+  - DL3054 # Do not use pip install --requirement
+  - DL3055 # Do not use pip install --no-deps
+  - DL3056 # Do not use pip install --force-reinstall
+  - DL3057 # Do not use pip install --no-binary
+  - DL3058 # Do not use pip install --only-binary
+  - DL3059 # Multiple consecutive RUN instructions
+  - DL3060 # yarn cache clean missing after yarn install was run
+  - DL3061 # Invalid instruction cache mount
+  - DL4000 # MAINTAINER is deprecated
+  - DL4001 # Either use Wget or Curl but not both
+  - DL4003 # Multiple CMD instructions found
+  - DL4004 # Multiple ENTRYPOINT instructions found
+  - DL4005 # Use SHELL to change the default shell
+  - DL4006 # Set the SHELL option -o pipefail before RUN with a pipe in
+  - DL4007 # Set the SHELL option -o errexit before RUN with a pipe in
 # Trusted registries
 trustedRegistries:
   - docker.io
@@ -158,28 +157,22 @@ trustedRegistries:
   - jenkins
   - nginx
   - metallb
-
 # Output format
 output-format: tty
-
 # Verbose output
 verbose: true
-
 # Show source of rules
 show-source: true
-
 # Use colored output
 color: auto
-
 # Fail on specific rules
 fail-on:
   - error
   - warning
-
 # Exclude patterns
 exclude:
   - "vendor/"
   - ".git/"
   - "node_modules/"
   - ".venv/"
-  - "venv/" 
+  - "venv/"

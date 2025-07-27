@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,68 +19,68 @@ spec:
       nodeSelector:
         node-type: big
       tolerations:
-      - key: "dedicated"
-        operator: "Equal"
-        value: "jenkins"
-        effect: "NoSchedule"
+        - key: "dedicated"
+          operator: "Equal"
+          value: "jenkins"
+          effect: "NoSchedule"
       containers:
-      - name: jenkins
-        image: jenkins/jenkins:lts-jdk17
-        ports:
-        - containerPort: 8080
-          name: http
-        - containerPort: 50000
-          name: jnlp
-        env:
-        - name: JAVA_OPTS
-          value: "-Djenkins.install.runSetupWizard=false"
-        - name: JENKINS_OPTS
-          value: "--prefix=/jenkins"
-        - name: JENKINS_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-admin-secret
-              key: admin-password
-        - name: JENKINS_ADMIN_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-admin-secret
-              key: admin-username
-        volumeMounts:
-        - name: jenkins-home
-          mountPath: /var/jenkins_home
-        - name: jenkins-config
-          mountPath: /var/jenkins_config
-        resources:
-          requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /login
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /login
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+        - name: jenkins
+          image: jenkins/jenkins:lts-jdk17
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 50000
+              name: jnlp
+          env:
+            - name: JAVA_OPTS
+              value: "-Djenkins.install.runSetupWizard=false"
+            - name: JENKINS_OPTS
+              value: "--prefix=/jenkins"
+            - name: JENKINS_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-admin-secret
+                  key: admin-password
+            - name: JENKINS_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-admin-secret
+                  key: admin-username
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: jenkins-config
+              mountPath: /var/jenkins_config
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
-      - name: jenkins-home
-        persistentVolumeClaim:
-          claimName: jenkins-pvc
-      - name: jenkins-config
-        configMap:
-          name: jenkins-config
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+        - name: jenkins-config
+          configMap:
+            name: jenkins-config
 ---
 apiVersion: v1
 kind: Service
@@ -91,14 +92,14 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    targetPort: 8080
-    protocol: TCP
-    name: http
-  - port: 50000
-    targetPort: 50000
-    protocol: TCP
-    name: jnlp
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+    - port: 50000
+      targetPort: 50000
+      protocol: TCP
+      name: jnlp
   selector:
     app: jenkins
 ---

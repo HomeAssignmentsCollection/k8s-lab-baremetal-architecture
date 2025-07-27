@@ -1,3 +1,4 @@
+---
 # Pod Security Policies for Kubernetes
 # Политики безопасности подов для кластера Kubernetes
 
@@ -102,30 +103,30 @@ kind: ClusterRole
 metadata:
   name: psp-restricted
 rules:
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames: ['restricted-psp']
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['restricted-psp']
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: psp-privileged
 rules:
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames: ['privileged-psp']
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['privileged-psp']
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: psp-baseline
 rules:
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames: ['baseline-psp']
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['baseline-psp']
 ---
 # Bind PSP to namespaces
 apiVersion: rbac.authorization.k8s.io/v1
@@ -137,12 +138,12 @@ roleRef:
   kind: ClusterRole
   name: psp-restricted
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: lab-stands
-- kind: ServiceAccount
-  name: default
-  namespace: monitoring
+  - kind: ServiceAccount
+    name: default
+    namespace: lab-stands
+  - kind: ServiceAccount
+    name: default
+    namespace: monitoring
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -153,9 +154,9 @@ roleRef:
   kind: ClusterRole
   name: psp-privileged
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: kube-system
-- kind: ServiceAccount
-  name: default
-  namespace: ingress-nginx 
+  - kind: ServiceAccount
+    name: default
+    namespace: kube-system
+  - kind: ServiceAccount
+    name: default
+    namespace: ingress-nginx

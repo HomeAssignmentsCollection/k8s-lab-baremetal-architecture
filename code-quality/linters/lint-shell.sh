@@ -59,9 +59,9 @@ validate_shell_syntax() {
         echo -n "  Checking $(basename "$file")... "
         
         # Get the shell from shebang or default to bash
-        local shell_type="bash"
+        # local shell_type="bash"  # Unused variable
         if head -1 "$file" | grep -q "^#!"; then
-            shell_type=$(head -1 "$file" | sed 's|^#!||' | sed 's|/.*||')
+            true  # Shell type detection (unused for now)
         fi
         
         if bash -n "$file" 2>/dev/null; then

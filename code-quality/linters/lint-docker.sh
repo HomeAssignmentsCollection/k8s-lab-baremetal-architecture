@@ -10,7 +10,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
+# PURPLE='\033[0;35m'  # Unused color variable
 NC='\033[0m' # No Color
 
 # Configuration
@@ -165,7 +165,8 @@ check_best_practices() {
         fi
         
         # Check for .dockerignore
-        local dockerignore_file="$(dirname "$file")/.dockerignore"
+        local dockerignore_file
+        dockerignore_file="$(dirname "$file")/.dockerignore"
         if [[ -f "$dockerignore_file" ]]; then
             echo -e "${GREEN}✅ .dockerignore found for $file${NC}"
         else
@@ -251,7 +252,8 @@ scan_images() {
     done
     
     # Remove duplicates
-    local unique_images=($(printf "%s\n" "${images[@]}" | sort -u))
+    local unique_images
+    mapfile -t unique_images < <(printf "%s\n" "${images[@]}" | sort -u)
     
     for image in "${unique_images[@]}"; do
         echo -n "  Scanning $image... "
@@ -291,14 +293,16 @@ check_image_sizes() {
     done
     
     # Remove duplicates
-    local unique_images=($(printf "%s\n" "${images[@]}" | sort -u))
+    local unique_images
+    mapfile -t unique_images < <(printf "%s\n" "${images[@]}" | sort -u)
     
     for image in "${unique_images[@]}"; do
         echo -n "  Checking size of $image... "
         
         # Try to pull image and get size
         if docker pull "$image" > /dev/null 2>&1; then
-            local size=$(docker images "$image" --format "table {{.Size}}" | tail -n +2)
+            local size
+            size=$(docker images "$image" --format "table {{.Size}}" | tail -n +2)
             echo -e "${GREEN}✅ $size${NC}"
             
             # Check if image is too large (over 1GB)

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,35 +19,35 @@ spec:
       nodeSelector:
         node-type: medium
       containers:
-      - name: app
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
-          name: http
-        env:
-        - name: NODE_TYPE
-          value: "medium"
-        - name: APP_ENV
-          value: "lab-stands"
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: app
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: NODE_TYPE
+              value: "medium"
+            - name: APP_ENV
+              value: "lab-stands"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service
@@ -58,10 +59,10 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
-    name: http
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
   selector:
     app: lab-example-app
 ---
@@ -76,13 +77,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: lab-app.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: lab-example-app
-            port:
-              number: 80 
+    - host: lab-app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lab-example-app
+                port:
+                  number: 80

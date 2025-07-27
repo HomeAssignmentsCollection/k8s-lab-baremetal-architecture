@@ -1,3 +1,4 @@
+---
 # Pre-commit Configuration
 # This file configures pre-commit hooks for the project
 
@@ -33,7 +34,6 @@ repos:
         description: "Assert test files are named test_*.py or *_test.py"
       - id: requirements-txt-fixer
         description: "Sort requirements.txt and remove duplicate packages"
-
   # YAML linting
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.33.0
@@ -41,7 +41,6 @@ repos:
       - id: yamllint
         description: "Lint YAML files"
         args: ['--format', 'parsable', '--strict']
-
   # Shell script linting
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.9.0.6
@@ -49,7 +48,6 @@ repos:
       - id: shellcheck
         description: "Lint shell scripts"
         args: ['--severity=warning']
-
   # Terraform linting
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.88.0
@@ -64,7 +62,6 @@ repos:
       - id: terraform_tflint
         description: "Lint Terraform files"
         args: ['--args=--only=terraform_deprecated_index,terraform_unused_declarations,terraform_comment_syntax']
-
   # Ansible linting
   - repo: https://github.com/ansible/ansible-lint
     rev: v6.22.1
@@ -72,7 +69,6 @@ repos:
       - id: ansible-lint
         description: "Lint Ansible playbooks"
         args: ['--format', 'quiet']
-
   # Kubernetes manifest validation
   - repo: https://github.com/helm/helm
     rev: v3.13.3
@@ -81,14 +77,12 @@ repos:
         description: "Generate Helm documentation"
       - id: helm-lint
         description: "Lint Helm charts"
-
   # Dockerfile linting
   - repo: https://github.com/hadolint/hadolint
     rev: v2.12.0
     hooks:
       - id: hadolint-docker
         description: "Lint Dockerfiles"
-
   # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.38.0
@@ -96,14 +90,12 @@ repos:
       - id: markdownlint
         description: "Lint Markdown files"
         args: ['--fix']
-
   # Spell checking
   - repo: https://github.com/crate-ci/typos
     rev: v1.18.1
     hooks:
       - id: typos
         description: "Check for typos in code and documentation"
-
   # Security scanning
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
@@ -111,7 +103,6 @@ repos:
       - id: detect-secrets
         description: "Detect secrets in code"
         args: ['--baseline', '.secrets.baseline']
-
   # Git hooks
   - repo: local
     hooks:
@@ -122,21 +113,18 @@ repos:
         language: system
         files: \.(yaml|yml)$
         exclude: ^(vendor/|\.git/|\.venv/|venv/)
-
       - id: shell-script-validator
         name: "Shell Script Validator"
         description: "Validate shell scripts"
         entry: bash code-quality/linters/lint-shell.sh
         language: system
         files: \.sh$
-
       - id: terraform-validator
         name: "Terraform Validator"
         description: "Validate Terraform files"
         entry: bash code-quality/linters/lint-terraform.sh
         language: system
         files: \.tf$
-
       - id: ansible-validator
         name: "Ansible Validator"
         description: "Validate Ansible files"
@@ -144,12 +132,10 @@ repos:
         language: system
         files: \.(yml|yaml)$
         exclude: ^(vendor/|\.git/|\.venv/|venv/|molecule/|tests/)
-
 # Default settings
 default_language_version:
   python: python3
   node: 18
-
 # Global exclude patterns
 exclude: |
   (?x)^(
@@ -191,12 +177,9 @@ exclude: |
       \.Python|
       *.so
   )$
-
 # Fail fast
 fail_fast: false
-
 # Require all hooks to pass
 require_serial: false
-
 # Verbose output
-verbose: true 
+verbose: true

@@ -6,7 +6,6 @@
   hosts: all
   become: true
   gather_facts: true
-  
   vars:
     # Kubernetes configuration variables
     # Переменные конфигурации Kubernetes
@@ -16,35 +15,28 @@
     pod_cidr: "{{ pod_cidr | default('10.244.0.0/16') }}"
     service_cidr: "{{ service_cidr | default('10.96.0.0/12') }}"
     cluster_name: "{{ cluster_name | default('baremetal-cluster') }}"
-    
   tasks:
     # Install container runtime
     # Установка container runtime
-    
     - name: Install containerd
       include_tasks: tasks/install-containerd.yml
       when: container_runtime == "containerd"
-      
     - name: Install Docker
       include_tasks: tasks/install-docker.yml
       when: container_runtime == "docker"
-      
     # Install Kubernetes components
     # Установка компонентов Kubernetes
-    
     - name: Add Kubernetes GPG key (Debian/Ubuntu)
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
       when: ansible_os_family == "Debian"
-      
     - name: Add Kubernetes repository (Debian/Ubuntu)
       apt_repository:
         repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
         state: present
         filename: kubernetes
       when: ansible_os_family == "Debian"
-      
     - name: Add Kubernetes repository (RHEL/CentOS)
       yum_repository:
         name: kubernetes
@@ -54,7 +46,6 @@
         gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
         enabled: yes
       when: ansible_os_family == "RedHat"
-      
     - name: Install Kubernetes components (Debian/Ubuntu)
       apt:
         name:
@@ -64,7 +55,6 @@
         state: present
         update_cache: yes
       when: ansible_os_family == "Debian"
-      
     - name: Install Kubernetes components (RHEL/CentOS)
       yum:
         name:
@@ -73,7 +63,6 @@
           - kubectl-{{ kubernetes_version }}
         state: present
       when: ansible_os_family == "RedHat"
-      
     - name: Hold Kubernetes packages (Debian/Ubuntu)
       dpkg_selections:
         name: "{{ item }}"
@@ -83,33 +72,27 @@
         - kubeadm
         - kubectl
       when: ansible_os_family == "Debian"
-      
     - name: Start and enable kubelet
       systemd:
         name: kubelet
         state: started
         enabled: yes
         daemon_reload: yes
-        
     # Configure kubelet
     # Настройка kubelet
-    
     - name: Create kubelet configuration directory
       file:
         path: /etc/default
         state: directory
         mode: '0755'
-        
     - name: Configure kubelet
       template:
         src: templates/kubelet.j2
         dest: /etc/default/kubelet
         mode: '0644'
       notify: restart kubelet
-      
     # Install CNI plugins
     # Установка CNI плагинов
-    
     - name: Create CNI directories
       file:
         path: "{{ item }}"
@@ -118,43 +101,36 @@
       loop:
         - /opt/cni/bin
         - /etc/cni/net.d
-        
     - name: Download CNI plugins
       get_url:
         url: https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
         dest: /tmp/cni-plugins.tgz
         mode: '0644'
-        
     - name: Extract CNI plugins
       unarchive:
         src: /tmp/cni-plugins.tgz
         dest: /opt/cni/bin
         remote_src: yes
         creates: /opt/cni/bin/flannel
-        
     - name: Clean up CNI download
       file:
         path: /tmp/cni-plugins.tgz
         state: absent
-        
   handlers:
     - name: restart kubelet
       systemd:
         name: kubelet
         state: restarted
-        
 - name: Initialize Kubernetes cluster
   hosts: control_plane
   become: true
   gather_facts: true
-  
   tasks:
     - name: Initialize Kubernetes cluster
       command: kubeadm init --config=/etc/kubernetes/kubeadm-config.yaml
       register: kubeadm_init
       changed_when: kubeadm_init.rc == 0
       failed_when: kubeadm_init.rc != 0
-      
     - name: Create .kube directory
       file:
         path: /home/kubernetes/.kube
@@ -162,7 +138,6 @@
         owner: kubernetes
         group: kubernetes
         mode: '0755'
-        
     - name: Copy admin.conf to kubernetes user
       copy:
         src: /etc/kubernetes/admin.conf
@@ -171,51 +146,41 @@
         owner: kubernetes
         group: kubernetes
         mode: '0644'
-        
     - name: Get join command
       command: kubeadm token create --print-join-command
       register: join_command
       changed_when: false
-      
     - name: Store join command
       set_fact:
         join_command: "{{ join_command.stdout }}"
-        
 - name: Join worker nodes
   hosts: workers
   become: true
   gather_facts: true
-  
   tasks:
     - name: Join worker nodes to cluster
       command: "{{ hostvars[groups['control_plane'][0]]['join_command'] }}"
       register: join_result
       changed_when: join_result.rc == 0
       failed_when: join_result.rc != 0
-      
 - name: Install CNI plugin
   hosts: control_plane
   become: true
   gather_facts: true
-  
   tasks:
     - name: Install Flannel CNI
       include_tasks: tasks/install-flannel.yml
       when: cni_plugin == "flannel"
-      
     - name: Install Calico CNI
       include_tasks: tasks/install-calico.yml
       when: cni_plugin == "calico"
-      
     - name: Install Weave CNI
       include_tasks: tasks/install-weave.yml
       when: cni_plugin == "weave"
-      
 - name: Verify cluster
   hosts: control_plane
   become: true
   gather_facts: true
-  
   tasks:
     - name: Wait for nodes to be ready
       command: kubectl get nodes
@@ -223,11 +188,9 @@
       until: "'Ready' in node_status.stdout"
       retries: 30
       delay: 10
-      
     - name: Display cluster status
       command: kubectl get nodes -o wide
       register: cluster_status
-      
     - name: Show cluster status
       debug:
-        var: cluster_status.stdout_lines 
+        var: cluster_status.stdout_lines

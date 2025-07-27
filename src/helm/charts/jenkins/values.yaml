@@ -1,10 +1,10 @@
+---
 # Jenkins Helm Chart Values for Bare Metal Environment
 
 controller:
   # Jenkins image and version
   image: "jenkins/jenkins"
   tag: "lts-jdk17"
-  
   # Resource limits and requests
   resources:
     requests:
@@ -13,36 +13,30 @@ controller:
     limits:
       memory: "4Gi"
       cpu: "2000m"
-  
   # Node selector for big nodes
   nodeSelector:
     node-type: big
-  
   # Tolerations for dedicated nodes
   tolerations:
-  - key: "dedicated"
-    operator: "Equal"
-    value: "jenkins"
-    effect: "NoSchedule"
-  
+    - key: "dedicated"
+      operator: "Equal"
+      value: "jenkins"
+      effect: "NoSchedule"
   # Service configuration
   serviceType: LoadBalancer
   servicePort: 80
   targetPort: 8080
-  
   # Persistence configuration
   persistence:
     enabled: true
     storageClass: "local-storage"
     size: 50Gi
     accessMode: ReadWriteOnce
-  
   # Security configuration
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
     fsGroup: 1000
-  
   # Health checks
   livenessProbe:
     httpGet:
@@ -52,7 +46,6 @@ controller:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
-  
   readinessProbe:
     httpGet:
       path: /login
@@ -61,7 +54,6 @@ controller:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
-  
   # Jenkins Configuration as Code
   JCasC:
     enabled: true
@@ -119,14 +111,12 @@ controller:
               apiRateLimitChecker: ThrottleForNormalize
             gitHubPluginConfiguration:
               apiRateLimitChecker: ThrottleForNormalize
-  
   # Environment variables
   env:
-  - name: JAVA_OPTS
-    value: "-Djenkins.install.runSetupWizard=false"
-  - name: JENKINS_OPTS
-    value: "--prefix=/jenkins"
-  
+    - name: JAVA_OPTS
+      value: "-Djenkins.install.runSetupWizard=false"
+    - name: JENKINS_OPTS
+      value: "--prefix=/jenkins"
   # Ingress configuration
   ingress:
     enabled: true
@@ -134,12 +124,11 @@ controller:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/rewrite-target: /
     hosts:
-    - host: jenkins.local
-      paths:
-      - path: /
-        pathType: Prefix
+      - host: jenkins.local
+        paths:
+          - path: /
+            pathType: Prefix
     tls: []
-
 # Agent configuration
 agent:
   enabled: true
@@ -150,7 +139,6 @@ agent:
     limits:
       memory: "1Gi"
       cpu: "500m"
-
 # Backup configuration
 backup:
   enabled: false
@@ -158,8 +146,7 @@ backup:
   # schedule: "0 2 * * *"
   # storageClass: "local-storage"
   # size: 10Gi
-
 # Monitoring
 serviceMonitor:
   enabled: true
-  interval: 30s 
+  interval: 30s

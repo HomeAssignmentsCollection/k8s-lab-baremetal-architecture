@@ -1,3 +1,4 @@
+---
 # Development Environment Kubernetes Configuration
 # Kubernetes configuration for development environment
 
@@ -11,46 +12,37 @@ data:
   app.environment: "dev"
   app.debug: "true"
   app.log_level: "debug"
-  
   # Jenkins configuration
   jenkins.admin_user: "admin"
   jenkins.num_executors: "2"
   jenkins.jvm_opts: "-Xmx2g -Xms1g"
-  
   # Grafana configuration
   grafana.admin_user: "admin"
   grafana.allow_sign_up: "true"
   grafana.allow_anonymous: "false"
-  
   # ArgoCD configuration
   argocd.admin_user: "admin"
   argocd.repo_timeout: "180s"
   argocd.max_concurrent_reconciles: "1"
-  
   # Artifactory configuration
   artifactory.admin_user: "admin"
   artifactory.license_type: "community"
-  
   # Monitoring configuration
   prometheus.retention_days: "7"
   prometheus.scrape_interval: "30s"
   grafana.default_dashboard: "kubernetes-cluster"
-  
   # Network configuration
   ingress.class: "nginx"
   ingress.ssl_redirect: "false"
   metallb.address_pool: "default"
-  
   # Storage configuration
   storage.default_class: "local-storage"
   storage.backup_enabled: "false"
   storage.retention_days: "7"
-  
   # Security configuration
   security.rbac_enabled: "true"
   security.network_policies: "true"
   security.pod_security_policies: "false"
-  
   # Resource limits (dev environment - lower)
   resources.jenkins.memory: "1Gi"
   resources.jenkins.cpu: "500m"
@@ -59,4 +51,4 @@ data:
   resources.argocd.memory: "512Mi"
   resources.argocd.cpu: "250m"
   resources.artifactory.memory: "1Gi"
-  resources.artifactory.cpu: "500m" 
+  resources.artifactory.cpu: "500m"

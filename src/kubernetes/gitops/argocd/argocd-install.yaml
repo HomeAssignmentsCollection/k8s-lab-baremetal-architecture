@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -29,14 +30,14 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 8080
-  - name: https
-    port: 443
-    protocol: TCP
-    targetPort: 8080
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: argocd
     component: server
@@ -65,33 +66,33 @@ spec:
         node-type: big
       serviceAccountName: argocd-server
       containers:
-      - name: argocd-server
-        image: quay.io/argoproj/argocd:v2.8.4
-        command:
-        - argocd-server
-        - --staticassets
-        - /shared/app
-        - --insecure
-        - --disable-auth
-        ports:
-        - containerPort: 8080
-        - containerPort: 8083
-        env:
-        - name: ARGOCD_API_SERVER_REPLICAS
-          value: "1"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        volumeMounts:
-        - name: static-files
-          mountPath: /shared/app
+        - name: argocd-server
+          image: quay.io/argoproj/argocd:v2.8.4
+          command:
+            - argocd-server
+            - --staticassets
+            - /shared/app
+            - --insecure
+            - --disable-auth
+          ports:
+            - containerPort: 8080
+            - containerPort: 8083
+          env:
+            - name: ARGOCD_API_SERVER_REPLICAS
+              value: "1"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: static-files
+              mountPath: /shared/app
       volumes:
-      - name: static-files
-        emptyDir: {}
+        - name: static-files
+          emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -117,20 +118,20 @@ spec:
         node-type: big
       serviceAccountName: argocd-application-controller
       containers:
-      - name: argocd-application-controller
-        image: quay.io/argoproj/argocd:v2.8.4
-        command:
-        - argocd-application-controller
-        env:
-        - name: ARGOCD_RECONCILIATION_TIMEOUT
-          value: "180s"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: argocd-application-controller
+          image: quay.io/argoproj/argocd:v2.8.4
+          command:
+            - argocd-application-controller
+          env:
+            - name: ARGOCD_RECONCILIATION_TIMEOUT
+              value: "180s"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -170,5 +171,5 @@ metadata:
     component: secret
 type: Opaque
 data:
-  admin.password: YWRtaW4=  # admin
-  admin.passwordMtime: MjAyNC0wMS0wMVQwMDowMDowMFo= 
+  admin.password: YWRtaW4= # admin
+  admin.passwordMtime: MjAyNC0wMS0wMVQwMDowMDowMFo=

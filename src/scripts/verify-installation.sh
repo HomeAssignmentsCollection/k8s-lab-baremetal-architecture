@@ -43,8 +43,10 @@ check_kubernetes_cluster() {
     
     # Check nodes
     print_status "$BLUE" "Checking cluster nodes..."
-    local nodes=$(kubectl get nodes --no-headers | wc -l)
-    local ready_nodes=$(kubectl get nodes --no-headers | grep -c "Ready")
+    local nodes
+    local ready_nodes
+    nodes=$(kubectl get nodes --no-headers | wc -l)
+    ready_nodes=$(kubectl get nodes --no-headers | grep -c "Ready")
     
     print_status "$GREEN" "✓ Found $nodes nodes, $ready_nodes are ready"
     
@@ -57,8 +59,10 @@ check_kubernetes_cluster() {
     
     # Check system pods
     print_status "$BLUE" "Checking system pods..."
-    local system_pods=$(kubectl get pods -n kube-system --no-headers | wc -l)
-    local running_pods=$(kubectl get pods -n kube-system --no-headers | grep -c "Running")
+    local system_pods
+    local running_pods
+    system_pods=$(kubectl get pods -n kube-system --no-headers | wc -l)
+    running_pods=$(kubectl get pods -n kube-system --no-headers | grep -c "Running")
     
     print_status "$GREEN" "✓ Found $system_pods system pods, $running_pods are running"
     
@@ -98,7 +102,8 @@ check_storage() {
     # Check if default storage class exists
     # Проверка существования класса хранилища по умолчанию
     if kubectl get storageclass &> /dev/null; then
-        local storage_classes=$(kubectl get storageclass --no-headers | wc -l)
+        local storage_classes
+        storage_classes=$(kubectl get storageclass --no-headers | wc -l)
         print_status "$GREEN" "✓ Found $storage_classes storage classes"
         
         # Check for default storage class
@@ -125,7 +130,8 @@ check_monitoring() {
         
         # Check monitoring pods
         # Проверка подов мониторинга
-        local monitoring_pods=$(kubectl get pods -n monitoring --no-headers 2>/dev/null | wc -l || echo "0")
+        local monitoring_pods
+        monitoring_pods=$(kubectl get pods -n monitoring --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$monitoring_pods" -gt 0 ]; then
             print_status "$GREEN" "✓ Found $monitoring_pods monitoring pods"
         else
@@ -148,7 +154,8 @@ check_logging() {
         
         # Check logging pods
         # Проверка подов логирования
-        local logging_pods=$(kubectl get pods -n logging --no-headers 2>/dev/null | wc -l || echo "0")
+        local logging_pods
+        logging_pods=$(kubectl get pods -n logging --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$logging_pods" -gt 0 ]; then
             print_status "$GREEN" "✓ Found $logging_pods logging pods"
         else
@@ -171,7 +178,8 @@ check_ingress() {
         
         # Check ingress controller pods
         # Проверка подов ingress контроллера
-        local ingress_pods=$(kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | wc -l || echo "0")
+        local ingress_pods
+        ingress_pods=$(kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | wc -l || echo "0")
         if [ "$ingress_pods" -gt 0 ]; then
             print_status "$GREEN" "✓ Found $ingress_pods ingress controller pods"
         else
@@ -189,7 +197,8 @@ run_basic_tests() {
     
     # Test namespace creation
     # Тест создания namespace
-    local test_namespace="verification-test-$(date +%s)"
+    local test_namespace
+    test_namespace="verification-test-$(date +%s)"
     if kubectl create namespace "$test_namespace" &> /dev/null; then
         print_status "$GREEN" "✓ Namespace creation works"
         kubectl delete namespace "$test_namespace" &> /dev/null
@@ -199,7 +208,8 @@ run_basic_tests() {
     
     # Test pod creation
     # Тест создания пода
-    local test_pod="test-pod-$(date +%s)"
+    local test_pod
+    test_pod="test-pod-$(date +%s)"
     if kubectl run "$test_pod" --image=nginx:alpine --restart=Never &> /dev/null; then
         print_status "$GREEN" "✓ Pod creation works"
         kubectl delete pod "$test_pod" &> /dev/null

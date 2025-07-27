@@ -60,7 +60,8 @@ check_cluster() {
         exit 1
     fi
     
-    local cluster_info=$(kubectl cluster-info | head -n 1)
+    local cluster_info
+    cluster_info=$(kubectl cluster-info | head -n 1)
     log_info "Cluster connection established: $cluster_info"
 }
 
@@ -205,7 +206,8 @@ check_deployment_status() {
 create_deployment_report() {
     log_step "Создание отчета о развертывании..."
     
-    local report_file="deployment-report-$(date +%Y%m%d-%H%M%S).txt"
+    local report_file
+    report_file="deployment-report-$(date +%Y%m%d-%H%M%S).txt"
     
     {
         echo "Отчет о развертывании k8s-lab-baremetal-architecture"
@@ -248,7 +250,8 @@ cleanup_on_error() {
 
 # Основная функция
 main() {
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     log_info "Начало полного развертывания k8s-lab-baremetal-architecture..."
     log_info "Время начала: $(date)"
@@ -270,7 +273,8 @@ main() {
     check_deployment_status
     create_deployment_report
     
-    local end_time=$(date +%s)
+    local end_time
+    end_time=$(date +%s)
     local duration=$((end_time - start_time))
     
     log_info "Развертывание завершено успешно!"

@@ -248,7 +248,8 @@ lint_file() {
 
 # Function to generate lint report
 generate_lint_report() {
-    local report_file="k8s-lint-report-$(date +%Y%m%d-%H%M%S).txt"
+    local report_file
+    report_file="k8s-lint-report-$(date +%Y%m%d-%H%M%S).txt"
     
     {
         echo "Kubernetes Manifests Lint Report"
@@ -302,7 +303,8 @@ main() {
     print_status "$BLUE" "Начинаем анализ манифестов Kubernetes..."
     
     # Find all YAML files
-    local yaml_files=$(find src/kubernetes -name "*.yaml" -o -name "*.yml" 2>/dev/null || echo "")
+    local yaml_files
+    yaml_files=$(find src/kubernetes -name "*.yaml" -o -name "*.yml" 2>/dev/null || echo "")
     
     if [ -z "$yaml_files" ]; then
         print_status "$YELLOW" "No YAML files found to lint"
